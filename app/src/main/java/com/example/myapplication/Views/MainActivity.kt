@@ -279,8 +279,8 @@ fun CourseCard(courseCode: String, courseTitle: String, instructorName: String) 
         modifier = Modifier
             .fillMaxWidth()
             .shadow(10.dp)
-            .width(371.dp)
-            .height(262.dp),
+            //.width(350.dp)
+            .height(240.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F3F3)),
     ) {
@@ -297,7 +297,7 @@ fun CourseCard(courseCode: String, courseTitle: String, instructorName: String) 
                     .background(color = Color(0xFF9EC7F2), shape = RoundedCornerShape(16.dp))
                     .padding(horizontal = 12.dp, vertical = 8.dp)
                     .width(371.dp)
-                    .height(150.dp),
+                    .height(130.dp),
 
             ) {
                 Text(
