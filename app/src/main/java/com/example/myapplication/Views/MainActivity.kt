@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
@@ -24,7 +26,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.sp
 import com.example.myapplication.Models.CourseModel
 
 class MainActivity : ComponentActivity() {
@@ -48,29 +55,27 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     val courses = listOf(
-        CourseModel("VCD 471", "Interactive Design Studio", "Merve Çaşkurlu"),
-        CourseModel("VCD 472", "Advanced Design Studio", "Ahmet Yılmaz"),
-        CourseModel("VCD 473", "UI/UX Fundamentals", "Zeynep Kaya"),
-        CourseModel("VCD 474", "Animation Techniques", "Burak Demir"),
-        CourseModel("VCD 475", "Game Design", "Selin Aksoy")
+        CourseModel("VCD 471", "Interactive Design Studio", "Merve Çaşkurlu")
     )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
-            .padding(16.dp)
+            .background(Color(0xFFF3F3F3))
+            .padding(20.dp) // Genel padding
     ) {
+        TitleCircle()
         // Başlık ve Kullanıcı Bilgisi
         Text(
             text = "Hey, Alice!",
             style = MaterialTheme.typography.headlineMedium,
+            fontSize = 35.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 4.dp)
         )
         Text(
             text = "20212345678",
-            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp,
             color = Color(0xFF88B04B),
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -83,6 +88,8 @@ fun MyApp() {
         CategorySection()
         Spacer(modifier = Modifier.height(24.dp))
 
+        MyCoursesWithNavButton()
+
         // Kaydırılabilir Kurs Listesi
         Box(
             modifier = Modifier
@@ -92,28 +99,90 @@ fun MyApp() {
             MyCoursesSection(courses = courses)
         }
 
-        NavigationBarSection()
+        // NavigationBarSection'a padding eklenmesin
+        NavigationBarSection(
+            modifier = Modifier.padding(0.dp) // Burada padding'i sıfırlıyoruz
+        )
     }
 }
 
 @Composable
+fun TitleCircle() {
+    val circleRadius = 800.dp // Dairenin yarıçapı
+
+    Canvas(modifier = Modifier.fillMaxWidth().height(80.dp)) {
+        // Dairenin merkezini değiştirelim
+        val circleCenterX = size.width / 2 // Yatayda ekranın ortasında
+        val circleCenterY = -circleRadius.toPx() + 150f // Dikeyde daha aşağıya kaydırılmış, ekranın dışına daha yakın
+
+        // Dairenin çizilmesi
+        drawCircle(
+            color = Color(0xFF1E3A5F), // Dairenin rengi
+            radius = circleRadius.toPx(), // Yarıçap
+            center = Offset(circleCenterX, circleCenterY) // Dairenin merkezi
+        )
+    }
+}
+
+
+@Composable
 fun MyCoursesSection(courses: List<CourseModel>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp) // Kartlar arası boşluk
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
     ) {
-        items(courses) { course ->
-            CourseCard(
-                courseCode = course.courseCode,
-                courseTitle = course.courseTitle,
-                instructorName = course.instructorName
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            //verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(courses) { course ->
+                CourseCard(
+                    courseCode = course.courseCode,
+                    courseTitle = course.courseTitle,
+                    instructorName = course.instructorName
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun MyCoursesWithNavButton() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(2.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // "My Courses" Text
+        Text(
+            text = "My Courses",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 26.sp,
+            color = Color(0xFF342E37),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        // Navigation Button (Right Arrow)
+        IconButton(
+            onClick = {
+                // Navigate to the target screen
+                //navController.navigate("targetScreen")
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowForward,
+                contentDescription = "Navigate",
+                tint = Color(0xFF9EC7F2)
             )
         }
     }
 }
 
 @Composable
-fun NavigationBarSection() {
+fun NavigationBarSection(modifier: Modifier) {
     NavigationBar {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = null) },
@@ -156,7 +225,11 @@ fun SearchBar() {
                 contentDescription = null
             )
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .shadow(10.dp, shape = RoundedCornerShape(16.dp)) // Shadow added
+            .clip(RoundedCornerShape(16.dp)), // Corner radius applied
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.White,
             focusedIndicatorColor = Color(0xFF1E3A5F),
@@ -165,16 +238,20 @@ fun SearchBar() {
     )
 }
 
+
 @Composable
 fun CategoryCard(title: String, icon: ImageVector, backgroundColor: Color) {
     Card(
         modifier = Modifier
-            .size(width = 125.dp, height = 185.dp)
+            .size(width = 118.dp, height = 190.dp)
+            .shadow(5.dp, shape = RoundedCornerShape(16.dp)) // Gölgeleri düzgün göstermek için şekil ekledik
             .padding(4.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize() // Column içeriği tam olarak kapsar
+                .padding(5.dp), // İçeriğin kenarlara daha yakın olmasını sağlarız
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -188,44 +265,74 @@ fun CategoryCard(title: String, icon: ImageVector, backgroundColor: Color) {
             Text(
                 text = title,
                 color = Color.White,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 }
 
+
 @Composable
 fun CourseCard(courseCode: String, courseTitle: String, instructorName: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp),
+            .shadow(10.dp)
+            .width(371.dp)
+            .height(262.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF4285F4))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F3F3)),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Text(
-                text = courseCode,
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = courseTitle,
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
-            Text(
-                text = instructorName,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF88B04B)
-            )
+            // Baby blue box with course code
+            Box(
+                modifier = Modifier
+
+                    .align(Alignment.TopCenter)
+                    .background(color = Color(0xFF9EC7F2), shape = RoundedCornerShape(16.dp))
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .width(371.dp)
+                    .height(150.dp),
+
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    text = courseCode,
+                    fontSize = 64.sp,
+                    color = Color(0xFFFFFFFF),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            // Course title and instructor name
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(top = 16.dp)
+            ) {
+                Text(
+                    text = courseTitle,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF342E37)
+                )
+                Text(
+                    text = instructorName,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF718A39)
+                )
+            }
         }
     }
 }
+
 
 @Composable
 fun CategorySection() {
