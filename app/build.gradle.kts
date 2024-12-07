@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.navigation:navigation-compose:$2.8.4")
     implementation(libs.androidx.navigation.runtime.ktx)
     val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
     implementation("androidx.compose.material3:material3:1.2.0")
