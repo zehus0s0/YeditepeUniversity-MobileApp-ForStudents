@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
@@ -46,13 +47,13 @@ fun MyApp() {
             NavigationBarSection(navController = navController)
         }
     ) { paddingValues ->
-        // NavHost içinde başlangıç ekranını Home olarak ayarlıyoruz
+        // NavHost içinde başlangıç ekranını LoginPage olarak ayarlıyoruz
         NavHost(
             navController = navController,
-            startDestination = "home", // Burada Home ekranı başlangıç ekranı
+            startDestination = "login", // Burada LoginPage ekranını başlangıç ekranı yapıyoruz
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable("home") { HomeView() } // HomeView burada çağrılıyor
+            composable("login") { LoginPage() } // LoginPage burada çağrılıyor
             composable("reviews") { ReviewsScreen() }
             composable("account") { AccountScreen() }
             composable("chat") { ChatScreen() }
@@ -60,16 +61,6 @@ fun MyApp() {
     }
 }
 
-@Composable
-fun HomeView() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text("Home Screen", color = Color.Black, style = MaterialTheme.typography.headlineMedium)
-    }
-}
 
 @Composable
 fun NavigationBarSection(navController: NavHostController) {
