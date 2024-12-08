@@ -30,8 +30,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.Models.CourseModel
+import com.example.myapplication.Views.LoginView.LoginPage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -343,4 +345,10 @@ fun CategorySection() {
         CategoryCard("Groups", Icons.Default.Group, Color(0xFF4285F4))
         CategoryCard("Clubs", Icons.Default.People, Color(0xFF4285F4))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLoginPage() {
+    MyApp()
 }
