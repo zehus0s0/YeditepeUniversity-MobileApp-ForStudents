@@ -56,6 +56,9 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage() {
+    // Forgot Password butonunun durumunu yöneten state
+    var isForgotPasswordClicked by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -70,7 +73,22 @@ fun LoginPage() {
         ) {
             // Başlık (Sola hizalanmış)
             HeadCircle()
-            WelcomeSection() // Sola hizalanacak
+
+            // WelcomeSection yazılarının durumu
+            if (!isForgotPasswordClicked) {
+                WelcomeSection()
+            } else {
+                // Forgot Password tıklandığında gösterilecek yeni yazı
+                Text(
+                    text = "Password Recovery",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontSize = 35.sp,
+                    color = Color(0xFF342E37),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             // Kullanıcı adı textfield
@@ -78,24 +96,45 @@ fun LoginPage() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Şifre textfield
-            PasswordView()
+            // Şifre textfield (PasswordView), ForgotPassword aktifse TextField olarak gösterilecek
+            if (!isForgotPasswordClicked) {
+                PasswordView() // Şifre view
+            } else {
+                OutlinedTextField(
+                    value = "", // Şifreyi burada değiştirebilirsiniz
+                    onValueChange = {},
+                    label = { Text("New Password") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Lock,
+                            contentDescription = "Password Icon"
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth().height(60.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors()
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Şifremi unuttum yazısı
-            ForgotPasswordText()
+            // Şifremi unuttum yazısı, tıklandığında Forgot Password durumunu değiştiriyor
+            if (!isForgotPasswordClicked) {
+                ForgotPasswordText {
+                    isForgotPasswordClicked = true
+                }
+            }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // LogIn butonu (Ortada)
+            // LogIn butonu, Forgot Password tıklandığında metin değişiyor
             Box(
                 modifier = Modifier
                     .padding(30.dp)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                LogInButton()
+                LogInButton(isForgotPasswordClicked)
             }
         }
     }
@@ -210,7 +249,7 @@ fun PasswordView() {
 }
 
 @Composable
-fun ForgotPasswordText() {
+fun ForgotPasswordText(onClick: () -> Unit) {
     Text(
         text = buildAnnotatedString {
             withStyle(
@@ -218,24 +257,23 @@ fun ForgotPasswordText() {
                     color = Color(0xFF718A39),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    textDecoration = TextDecoration.Underline // Alt çizgi ekleme
+                    textDecoration = TextDecoration.Underline
                 )
             ) {
                 append("I forgot my password")
             }
         },
         modifier = Modifier
-            .fillMaxWidth() // Genişliği tam olarak ayarla
-            .clickable {
-                // Handle forgot password click
-            },
-        textAlign = TextAlign.End // Sağa hizalama
+            .fillMaxWidth()
+            .clickable { onClick() },
+        textAlign = TextAlign.End
     )
 }
 
 
+
 @Composable
-fun LogInButton() {
+fun LogInButton(isForgotPasswordClicked: Boolean) {
     Button(
         onClick = {
             // Handle login button click
@@ -244,10 +282,10 @@ fun LogInButton() {
             .height(50.dp)
             .width(150.dp)
             .shadow(
-                elevation = 10.dp, // Gölge yüksekliğini artırdık
-                shape = RoundedCornerShape(50), // Yuvarlak köşelerle gölge
-                ambientColor = Color.Black.copy(alpha = 0.3f), // Gölgenin renk tonu
-                spotColor = Color.Black.copy(alpha = 0.4f) // Gölgenin spot rengi
+                elevation = 10.dp,
+                shape = RoundedCornerShape(50),
+                ambientColor = Color.Black.copy(alpha = 0.3f),
+                spotColor = Color.Black.copy(alpha = 0.4f)
             ),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF9EC7F2),
@@ -256,11 +294,11 @@ fun LogInButton() {
     ) {
         Text(
             fontSize = 16.sp,
-            text = "Log in"
+            text = if (isForgotPasswordClicked) "Reset Password" else "Log in"
         )
-        Spacer(modifier = Modifier.width(8.dp)) // Metin ile ikon arasında boşluk ekledik
+        Spacer(modifier = Modifier.width(8.dp))
         Icon(
-            imageVector = Icons.Rounded.Login,
+            imageVector = if (isForgotPasswordClicked) Icons.Filled.Refresh else Icons.Rounded.Login,
             contentDescription = "Icon",
             tint = Color.White
         )

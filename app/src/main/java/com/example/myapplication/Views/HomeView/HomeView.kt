@@ -1,5 +1,4 @@
 package com.example.myapplication.Views
-
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -31,10 +30,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.Models.CourseModel
-import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +40,7 @@ class MainActivity : ComponentActivity() {
             setContent {
                 MaterialTheme {
                     Surface {
-                        HomeView()
+                        MyApp()
                     }
                 }
             }
@@ -55,7 +52,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeView() {
+fun MyApp() {
     val courses = listOf(
         CourseModel("VCD 471", "Interactive Design Studio", "Merve Çaşkurlu")
     )
@@ -345,13 +342,5 @@ fun CategorySection() {
         CategoryCard("Courses", Icons.Default.Book, Color(0xFF1E3A5F))
         CategoryCard("Groups", Icons.Default.Group, Color(0xFF4285F4))
         CategoryCard("Clubs", Icons.Default.People, Color(0xFF4285F4))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMyApp() {
-    MyApplicationTheme {
-        HomeView()
     }
 }
