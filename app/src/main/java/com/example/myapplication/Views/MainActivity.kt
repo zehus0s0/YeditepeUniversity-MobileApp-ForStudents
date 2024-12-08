@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.example.myapplication.Views.HomeView
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 
@@ -60,16 +61,6 @@ fun MyApp() {
     }
 }
 
-@Composable
-fun HomeView() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text("Home Screen", color = Color.Black, style = MaterialTheme.typography.headlineMedium)
-    }
-}
 
 @Composable
 fun NavigationBarSection(navController: NavHostController) {
