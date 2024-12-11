@@ -1,4 +1,4 @@
-package com.example.myapplication.Models
+package com.example.myapplication.DataLayer.Models
 
 data class CourseModel(
     // Course.kt

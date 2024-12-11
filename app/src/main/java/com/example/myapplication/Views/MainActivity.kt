@@ -30,16 +30,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                MyApp() // MyApp burada çağrılıyor
+                val navController = rememberNavController()
+                MyApp(navController) // Doğrudan MyApp çalıştırılıyor
             }
         }
     }
 }
 
+
 @Composable
-fun MyApp() {
+fun MyApp(navController : NavHostController) {
     // NavController oluşturuluyor
-    val navController = rememberNavController()
 
     // Scaffold ve NavigationBar kullanımı
     Scaffold(
@@ -128,10 +129,10 @@ fun ChatScreen() {
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun PreviewMyApp() {
     MyApplicationTheme {
         MyApp() // Burada MyApp fonksiyonu preview ediliyor
     }
-}
+}*/
