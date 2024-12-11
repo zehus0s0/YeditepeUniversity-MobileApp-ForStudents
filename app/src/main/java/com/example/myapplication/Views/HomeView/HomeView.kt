@@ -32,20 +32,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.Models.CourseModel
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.DataLayer.Models.CourseModel
+import com.example.myapplication.MyApp
 import com.example.myapplication.Views.LoginView.LoginPage
+import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
             setContent {
-                MaterialTheme {
-                    Surface {
-                        MyApp()
-                    }
+                MyApplicationTheme {
+                    val navController = rememberNavController()
+                    MyApp(navController) // Sadece NavHost ile başlat
                 }
             }
+
         } catch (e: Exception) {
             Log.e("MainActivity", "App Crash", e)
             throw e
@@ -54,7 +57,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp() {
+fun HomeView() {
     val courses = listOf(
         CourseModel("VCD 471", "Interactive Design Studio", "Merve Çaşkurlu")
     )
@@ -350,5 +353,5 @@ fun CategorySection() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginPage() {
-    MyApp()
+    HomeView()
 }

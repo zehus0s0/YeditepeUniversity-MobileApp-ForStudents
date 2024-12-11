@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +56,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage() {
-    // Forgot Password butonunun durumunu yöneten state
+fun LoginPage(viewModel: LoginViewModel = viewModel()) {
+    val username by viewModel.username.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val loginStatus by viewModel.loginStatus.collectAsState()
+
     var isForgotPasswordClicked by remember { mutableStateOf(false) }
 
     Box(
@@ -71,14 +75,11 @@ fun LoginPage() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center,
         ) {
-            // Başlık (Sola hizalanmış)
             HeadCircle()
 
-            // WelcomeSection yazılarının durumu
             if (!isForgotPasswordClicked) {
                 WelcomeSection()
             } else {
-                // Forgot Password tıklandığında gösterilecek yeni yazı
                 Text(
                     text = "Password Recovery",
                     style = MaterialTheme.typography.headlineMedium,
@@ -89,36 +90,31 @@ fun LoginPage() {
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             // Kullanıcı adı textfield
-            UserNameView()
+            UserNameView(
+                value = username,
+                onValueChange = viewModel::onUsernameChanged
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Şifre textfield (PasswordView), ForgotPassword aktifse TextField olarak gösterilecek
+            // Şifre textfield
             if (!isForgotPasswordClicked) {
-                PasswordView() // Şifre view
+                PasswordView(
+                    value = password,
+                    onValueChange = viewModel::onPasswordChanged
+                )
             } else {
-                OutlinedTextField(
-                    value = "", // Şifreyi burada değiştirebilirsiniz
-                    onValueChange = {},
-                    label = { Text("New Password") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = "Password Icon"
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth().height(60.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors()
+                PhoneNumberTextField(
+                    viewModel = viewModel
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Şifremi unuttum yazısı, tıklandığında Forgot Password durumunu değiştiriyor
             if (!isForgotPasswordClicked) {
                 ForgotPasswordText {
                     isForgotPasswordClicked = true
@@ -127,14 +123,33 @@ fun LoginPage() {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // LogIn butonu, Forgot Password tıklandığında metin değişiyor
+            // LogIn Butonu
             Box(
                 modifier = Modifier
                     .padding(30.dp)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                LogInButton(isForgotPasswordClicked)
+                LogInButton(
+                    isForgotPasswordClicked = isForgotPasswordClicked,
+                    onClick = {
+                        if (isForgotPasswordClicked) {
+
+                        } else {
+                            viewModel.login()
+                        }
+                    }
+                )
+            }
+
+            // Durum mesajı
+            loginStatus?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 16.dp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -181,13 +196,13 @@ fun WelcomeSection(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserNameView() {
+fun UserNameView(value: String, onValueChange: (String) -> Unit) {
     var usernameText by remember { mutableStateOf("") }
     val customColor = Color(0xFF718A39) // Ortak renk
 
     OutlinedTextField(
-        value = usernameText,
-        onValueChange = { usernameText = it },
+        value = value,
+        onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp) // Yüksekliği ayarlayarak boyutu küçültüyoruz
@@ -218,13 +233,12 @@ fun UserNameView() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordView() {
-    var passwordText by remember { mutableStateOf("") }
+fun PasswordView(value: String, onValueChange: (String) -> Unit) {
     val customColor = Color(0xFF718A39)
 
     OutlinedTextField(
-        value = passwordText,
-        onValueChange = { passwordText = it },
+        value = value,
+        onValueChange = onValueChange,
         shape = RoundedCornerShape(20.dp), // Daha yuvarlak köşeler
         modifier = Modifier
             .fillMaxWidth() // Genişliği tam alacak şekilde
@@ -245,6 +259,30 @@ fun PasswordView() {
             containerColor = Color.Transparent
         ),
         visualTransformation = PasswordVisualTransformation()
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PhoneNumberTextField(viewModel: LoginViewModel) {
+    var phoneNumberText by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = phoneNumberText,
+        onValueChange = {
+            phoneNumberText = it
+            viewModel.resetPassword(it)
+        },
+        label = { Text("Phone Number") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Lock,
+                contentDescription = "Password Icon"
+            )
+        },
+        modifier = Modifier.fillMaxWidth().height(60.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors()
     )
 }
 
@@ -273,11 +311,12 @@ fun ForgotPasswordText(onClick: () -> Unit) {
 
 
 @Composable
-fun LogInButton(isForgotPasswordClicked: Boolean) {
+fun LogInButton(
+    isForgotPasswordClicked: Boolean,
+    onClick: () -> Unit // onClick parametresi eklendi
+) {
     Button(
-        onClick = {
-            // Handle login button click
-        },
+        onClick = onClick, // Parametre burada kullanıldı
         modifier = Modifier
             .height(50.dp)
             .width(150.dp)
@@ -304,6 +343,7 @@ fun LogInButton(isForgotPasswordClicked: Boolean) {
         )
     }
 }
+
 
 
 @Preview(showBackground = true)
