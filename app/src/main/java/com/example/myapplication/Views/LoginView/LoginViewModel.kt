@@ -1,5 +1,7 @@
 package com.example.myapplication.Views.LoginView
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +13,9 @@ class LoginViewModel : ViewModel() {
 
     private val _password = MutableStateFlow("")
     val password = _password.asStateFlow()
+
+    private val _phoneNumber = MutableStateFlow("")
+    val phoneNumber = _phoneNumber.asStateFlow()
 
     // Hata mesajı veya başarı durumu için state
     private val _loginStatus = MutableStateFlow<String?>(null)
@@ -42,9 +47,9 @@ class LoginViewModel : ViewModel() {
         _loginStatus.value = "Yeni şifre ayarlandı"
     }
 
-
-    // Şifremi Unuttum
-    fun forgetPassword(){
-
+    fun onPhoneNumberChanged(newPhoneNumber: String){
+        _phoneNumber.value = newPhoneNumber
     }
 }
+
+
