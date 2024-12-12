@@ -1,16 +1,13 @@
 package com.example.myapplication.Views.LoginView
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -20,140 +17,81 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Login
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.Utilities.Constants
+import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try {
-            setContent {
-                MaterialTheme {
-                    Surface {
-                        LoginPage()
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("MainActivity", "App Crash", e)
-            throw e
+        setContent {
+            AppNavigation() // Navigation fonksiyonunu burada çağırıyoruz
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(viewModel: LoginViewModel = viewModel()) {
+fun AppNavigation() {
+    val navController = rememberNavController() // NavController'ı burada oluşturuyoruz
+
+    NavHost(
+        navController = navController,
+        startDestination = "login"
+    ) {
+        composable("login") { LoginPage(navController = navController) }
+        composable("forgot_password") { ResetPasswordScreen() }
+    }
+}
+
+@Composable
+fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = viewModel()) {
     val username by viewModel.username.collectAsState()
     val password by viewModel.password.collectAsState()
-    val loginStatus by viewModel.loginStatus.collectAsState()
-
-    var isForgotPasswordClicked by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFF3F3F3))
+            .background(Color.White)
             .padding(20.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            HeadCircle()
-
-            if (!isForgotPasswordClicked) {
-                WelcomeSection()
-            } else {
-                Text(
-                    text = "Password Recovery",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontSize = 35.sp,
-                    color = Color(0xFF342E37),
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-            }
-
+        Column(verticalArrangement = Arrangement.Center) {
+            Text(
+                text = "Welcome Back!",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Kullanıcı adı textfield
-            UserNameView(
-                value = username,
-                onValueChange = viewModel::onUsernameChanged
-            )
-
+            UserNameView(value = username, onValueChange = viewModel::onUsernameChanged)
             Spacer(modifier = Modifier.height(8.dp))
+            PasswordView(value = password, onValueChange = viewModel::onPasswordChanged)
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Şifre textfield
-            if (!isForgotPasswordClicked) {
-                PasswordView(
-                    value = password,
-                    onValueChange = viewModel::onPasswordChanged
-                )
-            } else {
-                PhoneNumberTextField(
-                    viewModel = viewModel
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if (!isForgotPasswordClicked) {
-                ForgotPasswordText {
-                    isForgotPasswordClicked = true
-                }
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // LogIn Butonu
-            Box(
-                modifier = Modifier
-                    .padding(30.dp)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+            Button(
+                onClick = { navController.navigate("home") },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                LogInButton(
-                    isForgotPasswordClicked = isForgotPasswordClicked,
-                    onClick = {
-                        if (isForgotPasswordClicked) {
-
-                        } else {
-                            viewModel.login()
-                        }
-                    }
-                )
-            }
-
-            // Durum mesajı
-            loginStatus?.let {
-                Text(
-                    text = it,
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 16.dp),
-                    textAlign = TextAlign.Center
-                )
+                Text("Log In")
             }
         }
     }
 }
+
 
 
 @Composable
@@ -167,7 +105,7 @@ fun HeadCircle() {
 
         // Dairenin çizilmesi
         drawCircle(
-            color = Color(0xFF1E3A5F), // Dairenin rengi
+            color = Constants.hubDarkBlue, // Dairenin rengi
             radius = circleRadius.toPx(), // Yarıçap
             center = Offset(circleCenterX, circleCenterY) // Dairenin merkezi
         )
@@ -181,7 +119,7 @@ fun WelcomeSection(){
         text = "Hello Student!",
         style = MaterialTheme.typography.headlineMedium,
         fontSize = 35.sp,
-        color = Color(0xFF342E37),
+        color = Constants.hubBlack,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Start,
         modifier = Modifier.padding(bottom = 4.dp)
@@ -265,24 +203,27 @@ fun PasswordView(value: String, onValueChange: (String) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneNumberTextField(viewModel: LoginViewModel) {
-    var phoneNumberText by remember { mutableStateOf("") }
+    var phoneNumberText by remember { mutableStateOf("") } // Kullanıcının girdiği telefon numarası
 
     OutlinedTextField(
-        value = phoneNumberText,
-        onValueChange = {
-            phoneNumberText = it
-            viewModel.resetPassword(it)
+        value = phoneNumberText, // TextField'in şu anki değeri
+        onValueChange = { newValue ->
+            phoneNumberText = newValue // Kullanıcı yeni bir şey yazdığında güncellenir
+            viewModel.onPhoneNumberChanged(newValue) // ViewModel'e telefon numarası aktarılabilir
         },
-        label = { Text("Phone Number") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp) // Yüksekliği ayarlayarak boyutu küçültüyoruz
+            .padding(8.dp),
+        shape = RoundedCornerShape(20.dp), // Daha yuvarlak köşeler
+        label = { Text("Username", color = Constants.hubBlack) },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Filled.Lock,
-                contentDescription = "Password Icon"
+                imageVector = Icons.Filled.Person,
+                contentDescription = "Username Icon",
+                tint = Constants.hubGreen
             )
         },
-        modifier = Modifier.fillMaxWidth().height(60.dp),
-        shape = RoundedCornerShape(20.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors()
     )
 }
 
@@ -313,10 +254,10 @@ fun ForgotPasswordText(onClick: () -> Unit) {
 @Composable
 fun LogInButton(
     isForgotPasswordClicked: Boolean,
-    onClick: () -> Unit // onClick parametresi eklendi
+    onClick: () -> Unit
 ) {
     Button(
-        onClick = onClick, // Parametre burada kullanıldı
+        onClick = onClick,
         modifier = Modifier
             .height(50.dp)
             .width(150.dp)
@@ -342,12 +283,4 @@ fun LogInButton(
             tint = Color.White
         )
     }
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLoginPage() {
-    LoginPage()
 }

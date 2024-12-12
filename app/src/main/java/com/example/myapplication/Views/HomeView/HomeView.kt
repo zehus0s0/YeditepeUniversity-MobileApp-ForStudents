@@ -4,9 +4,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Home
@@ -29,35 +27,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.DataLayer.Models.CourseModel
 import com.example.myapplication.MyApp
-import com.example.myapplication.Views.LoginView.LoginPage
+import com.example.myapplication.Views.LoginView.AppNavigation
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        try {
-            setContent {
-                MyApplicationTheme {
-                    val navController = rememberNavController()
-                    MyApp(navController) // Sadece NavHost ile başlat
-                }
-            }
-
-        } catch (e: Exception) {
-            Log.e("MainActivity", "App Crash", e)
-            throw e
+        setContent {
+            AppNavigation() // Navigation fonksiyonunu burada çağırıyoruz
         }
     }
 }
 
 @Composable
-fun HomeView() {
+fun HomeView(navController: NavHostController) {
     val courses = listOf(
         CourseModel("VCD 471", "Interactive Design Studio", "Merve Çaşkurlu")
     )
@@ -102,11 +90,6 @@ fun HomeView() {
         ) {
             MyCoursesSection(courses = courses)
         }
-
-        // NavigationBarSection'a padding eklenmesin
-        NavigationBarSection(
-            modifier = Modifier.padding(0.dp) // Burada padding'i sıfırlıyoruz
-        )
     }
 }
 
@@ -182,36 +165,6 @@ fun MyCoursesWithNavButton() {
                 tint = Color(0xFF9EC7F2)
             )
         }
-    }
-}
-
-@Composable
-fun NavigationBarSection(modifier: Modifier) {
-    NavigationBar {
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Home, contentDescription = null) },
-            label = { Text("Home") },
-            selected = true,
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Star, contentDescription = null) },
-            label = { Text("Reviews") },
-            selected = false,
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Person, contentDescription = null) },
-            label = { Text("Account") },
-            selected = false,
-            onClick = {}
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Message, contentDescription = null) },
-            label = { Text("Chat") },
-            selected = false,
-            onClick = {}
-        )
     }
 }
 
@@ -348,10 +301,4 @@ fun CategorySection() {
         CategoryCard("Groups", Icons.Default.Group, Color(0xFF4285F4))
         CategoryCard("Clubs", Icons.Default.People, Color(0xFF4285F4))
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLoginPage() {
-    HomeView()
 }
