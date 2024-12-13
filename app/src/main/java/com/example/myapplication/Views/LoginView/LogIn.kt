@@ -1,8 +1,6 @@
 package com.example.myapplication.Views.LoginView
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.content.Intent
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.*
@@ -17,9 +15,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.rounded.Login
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -29,42 +24,34 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Components.CustomButton
 import com.example.myapplication.Utilities.Constants
-import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AppNavigation() // Navigation fonksiyonunu burada çağırıyoruz
-        }
-    }
-}
-
 @Composable
-fun AppNavigation() {
-    val navController = rememberNavController() // NavController'ı burada oluşturuyoruz
+fun LoginPage(
+    navController: NavHostController,
 
-    NavHost(
-        navController = navController,
-        startDestination = "login"
-    ) {
-        composable("login") { LoginPage(navController = navController) }
-        composable("reset_password") { ResetPasswordScreen() }
-    }
-}
-
-@Composable
-fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = viewModel()) {
+) {
+    val viewModel: LoginViewModel = viewModel()
     val username by viewModel.username.collectAsState()
     val password by viewModel.password.collectAsState()
+    val navigateToHome by viewModel.navigateToHome.collectAsState()
+
+    // Kullanıcı login olduktan sonra navigasyonu kontrol et
+    LaunchedEffect(navigateToHome) {
+        if (navigateToHome) {
+            // Login başarılı olduğunda MainActivity'e yönlendir
+            navController.navigate("main") {
+                popUpTo("login") { inclusive = true } // Login sayfasını yığından çıkar
+            }
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -81,15 +68,17 @@ fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = view
             HeadCircle()
             WelcomeSection() // Sola hizalanacak
             Spacer(modifier = Modifier.height(16.dp))
-            // Kullanıcı adı textfield
 
+            // Kullanıcı adı textfield
             UserNameView(value = username, onValueChange = viewModel::onUsernameChanged)
             Spacer(modifier = Modifier.height(8.dp))
             PasswordView(value = password, onValueChange = viewModel::onPasswordChanged)
             Spacer(modifier = Modifier.height(16.dp))
+
             ForgotPasswordText {
                 navController.navigate("reset_password")
             }
+
             Spacer(modifier = Modifier.height(40.dp))
             CustomButton(
                 buttonColor = Constants.hubBabyBlue,
@@ -98,10 +87,17 @@ fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = view
                 buttonIcon = Icons.Filled.Login,
                 buttonHeight = 50,
                 buttonWidth = 150
-            ) {viewModel.login()}
+            ) {
+                // Handle login action
+                val isLoginSuccessful = viewModel.login() // Assume this returns success/failure
+                if (isLoginSuccessful) {
+                    viewModel.setNavigateToHome(true)
+                }
+            }
         }
     }
 }
+
 
 
 
@@ -146,12 +142,11 @@ fun WelcomeSection(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserNameView(value: String, onValueChange: (String) -> Unit) {
-    var usernameText by remember { mutableStateOf("") }
     val customColor = Color(0xFF718A39) // Ortak renk
 
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = onValueChange, // dışarıdan gelen değişimi yansıtıyoruz
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp) // Yüksekliği ayarlayarak boyutu küçültüyoruz
@@ -165,8 +160,11 @@ fun UserNameView(value: String, onValueChange: (String) -> Unit) {
                 tint = Constants.hubGreen
             )
         },
+        singleLine = true, // Tek satırda yazılmasını sağlamak
+        isError = value.isEmpty(), // Eğer boşsa hata durumu
     )
 }
+
 
 
 
@@ -250,9 +248,13 @@ fun ForgotPasswordText(onClick: () -> Unit) {
     )
 }
 
-@Preview
+/*@Preview
 @Composable
 fun MyPri(){
     val navController = rememberNavController()
-    LoginPage(navController)
-}
+    
+    LoginPage(
+        navController,
+        viewModel = LoginViewModel()
+    )
+}*/

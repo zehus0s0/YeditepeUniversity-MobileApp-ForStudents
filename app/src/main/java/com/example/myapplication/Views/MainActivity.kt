@@ -24,32 +24,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme { // Uygulama teması burada uygulanıyor
-                val navController = rememberNavController() // Navigasyon kontrolcüsü oluşturuluyor
-                MyApp(navController) // MyApp composable'ı çağrılıyor
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = "home"
+                ) {
+                    composable("home") {
+                        HomeView(navController = navController)
+                    }
+                }
             }
         }
     }
 }
 
-@Composable
-fun MyApp(navController: NavHostController) {
-    Scaffold(
-        bottomBar = {
-            NavigationBarSection(navController = navController) // Alt gezinme çubuğu
-        }
-    ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = "login", // İlk açılışta gösterilecek ekran
-            modifier = Modifier.padding(paddingValues) // Alt çubuğun alanını hesaba katar
-        ) {
-            // Navigasyon rotaları burada tanımlanır
-            composable("login") { LoginPage(navController = navController) }
-            composable("forgot_password") { ResetPasswordScreen(navController = navController) }
-            composable("home") { HomeView(navController = navController) }
-        }
-    }
-}
 
 @Composable
 fun NavigationBarSection(navController: NavHostController) {
@@ -66,17 +54,5 @@ fun NavigationBarSection(navController: NavHostController) {
             selected = navController.currentBackStackEntryAsState().value?.destination?.route == "account",
             onClick = { navController.navigate("account") }
         )
-    }
-}
-
-
-
-// Preview için sahte bir NavController kullanımı
-@Preview(showBackground = true)
-@Composable
-fun PreviewMyApp() {
-    MyApplicationTheme {
-        val navController = rememberNavController()
-        MyApp(navController)
     }
 }

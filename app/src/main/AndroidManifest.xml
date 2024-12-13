@@ -12,17 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
+
+        <!-- Login Activity (MAIN ile belirtiyoruz) -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
+            android:name=".Views.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MyApplication">
+            android:theme="@style/Theme.MyApplication"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!-- Main Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MyApplication"
+            android:exported="true" />
+
+    </application>
 </manifest>
