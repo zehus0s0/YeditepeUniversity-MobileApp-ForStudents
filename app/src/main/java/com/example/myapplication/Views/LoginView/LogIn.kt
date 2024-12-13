@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Login
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.SpanStyle
@@ -26,14 +27,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.Components.CustomButton
 import com.example.myapplication.Utilities.Constants
 import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
+import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +57,7 @@ fun AppNavigation() {
         startDestination = "login"
     ) {
         composable("login") { LoginPage(navController = navController) }
-        composable("forgot_password") { ResetPasswordScreen() }
+        composable("reset_password") { ResetPasswordScreen() }
     }
 }
 
@@ -68,26 +72,33 @@ fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = view
             .background(Color.White)
             .padding(20.dp)
     ) {
-        Column(verticalArrangement = Arrangement.Center) {
-            Text(
-                text = "Welcome Back!",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            HeadCircle()
+            WelcomeSection() // Sola hizalanacak
             Spacer(modifier = Modifier.height(16.dp))
+            // Kullanıcı adı textfield
 
             UserNameView(value = username, onValueChange = viewModel::onUsernameChanged)
             Spacer(modifier = Modifier.height(8.dp))
             PasswordView(value = password, onValueChange = viewModel::onPasswordChanged)
             Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { navController.navigate("home") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Log In")
+            ForgotPasswordText {
+                navController.navigate("reset_password")
             }
+            Spacer(modifier = Modifier.height(40.dp))
+            CustomButton(
+                buttonColor = Constants.hubBabyBlue,
+                buttonText = "Log In",
+                buttonTextColor = Constants.hubWhite,
+                buttonIcon = Icons.Filled.Login,
+                buttonHeight = 50,
+                buttonWidth = 150
+            ) {viewModel.login()}
         }
     }
 }
@@ -151,19 +162,9 @@ fun UserNameView(value: String, onValueChange: (String) -> Unit) {
             Icon(
                 imageVector = Icons.Filled.Person,
                 contentDescription = "Username Icon",
-                tint = customColor
+                tint = Constants.hubGreen
             )
         },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = customColor,
-            unfocusedBorderColor = customColor,
-            cursorColor = customColor,
-            containerColor = Color.Transparent, // Şeffaf arka plan
-            focusedLabelColor = customColor,   // Label odaklanınca
-            unfocusedLabelColor = customColor, // Label odaklanmayınca
-            focusedLeadingIconColor = customColor, // İkon odaklanınca
-            unfocusedLeadingIconColor = customColor // İkon odaklanmayınca
-        )
     )
 }
 
@@ -202,7 +203,7 @@ fun PasswordView(value: String, onValueChange: (String) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PhoneNumberTextField(viewModel: LoginViewModel) {
+fun PhoneNumberTextField(viewModel: ResetPasswordViewModel) {
     var phoneNumberText by remember { mutableStateOf("") } // Kullanıcının girdiği telefon numarası
 
     OutlinedTextField(
@@ -249,38 +250,9 @@ fun ForgotPasswordText(onClick: () -> Unit) {
     )
 }
 
-
-
+@Preview
 @Composable
-fun LogInButton(
-    isForgotPasswordClicked: Boolean,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .height(50.dp)
-            .width(150.dp)
-            .shadow(
-                elevation = 10.dp,
-                shape = RoundedCornerShape(50),
-                ambientColor = Color.Black.copy(alpha = 0.3f),
-                spotColor = Color.Black.copy(alpha = 0.4f)
-            ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF9EC7F2),
-            contentColor = Color.White
-        )
-    ) {
-        Text(
-            fontSize = 16.sp,
-            text = if (isForgotPasswordClicked) "Reset Password" else "Log in"
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Icon(
-            imageVector = if (isForgotPasswordClicked) Icons.Filled.Refresh else Icons.Rounded.Login,
-            contentDescription = "Icon",
-            tint = Color.White
-        )
-    }
+fun MyPri(){
+    val navController = rememberNavController()
+    LoginPage(navController)
 }
