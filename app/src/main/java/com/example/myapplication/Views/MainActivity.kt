@@ -45,8 +45,8 @@ fun MyApp(navController: NavHostController) {
         ) {
             // Navigasyon rotaları burada tanımlanır
             composable("login") { LoginPage(navController = navController) }
-            composable("forgot_password") { ResetPasswordScreen(navController) }
-            composable("home") { HomeView(navController) }
+            composable("forgot_password") { ResetPasswordScreen(navController = navController) }
+            composable("home") { HomeView(navController = navController) }
         }
     }
 }
