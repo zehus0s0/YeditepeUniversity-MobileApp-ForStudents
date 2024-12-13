@@ -30,18 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.DataLayer.Models.CourseModel
-import com.example.myapplication.MyApp
-import com.example.myapplication.Views.LoginView.AppNavigation
+import com.example.myapplication.Utilities.Constants
 import com.example.myapplication.ui.theme.MyApplicationTheme
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AppNavigation() // Navigation fonksiyonunu burada çağırıyoruz
-        }
-    }
-}
 
 @Composable
 fun HomeView(navController: NavHostController) {
@@ -171,6 +161,7 @@ fun MyCoursesWithNavButton() {
 @Composable
 fun SearchBar() {
     var searchText by remember { mutableStateOf("") }
+
     TextField(
         value = searchText,
         onValueChange = { searchText = it },
@@ -187,12 +178,13 @@ fun SearchBar() {
             .shadow(10.dp, shape = RoundedCornerShape(16.dp)) // Shadow added
             .clip(RoundedCornerShape(16.dp)), // Corner radius applied
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.White,
-            focusedIndicatorColor = Color(0xFF1E3A5F),
-            unfocusedIndicatorColor = Color.Transparent
+            focusedIndicatorColor = Constants.hubGreen, // Focused indicator color
+            unfocusedIndicatorColor = Constants.hubBlack, // Unfocused indicator color
+            containerColor = Constants.hubBlack // Text color
         )
     )
 }
+
 
 
 @Composable

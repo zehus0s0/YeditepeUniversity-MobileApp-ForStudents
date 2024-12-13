@@ -34,26 +34,6 @@ import com.example.myapplication.Views.LoginView.PhoneNumberTextField
 import com.example.myapplication.Views.LoginView.UserNameView
 import com.example.myapplication.Views.LoginView.WelcomeSection
 
-class ResetPasswordScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        try {
-            setContent {
-                val navController = rememberNavController()
-                val resetPasswordViewModel: ResetPasswordViewModel = viewModel()
-                MaterialTheme {
-                    Surface {
-                        ResetPasswordScreen(navController = navController, viewModel = resetPasswordViewModel)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("ResetPasswordScreen", "App Crash", e)
-            throw e
-        }
-    }
-}
-
 @Composable
 fun ResetPasswordScreen(navController: NavHostController, viewModel: ResetPasswordViewModel = viewModel()) {
     val username by viewModel.username.collectAsState()
@@ -79,10 +59,6 @@ fun ResetPasswordScreen(navController: NavHostController, viewModel: ResetPasswo
             UserNameView(value = username, onValueChange = viewModel::onUsernameChanged)
             Spacer(modifier = Modifier.height(8.dp))
             PhoneNumberTextField(viewModel = viewModel)
-            Spacer(modifier = Modifier.height(16.dp))
-            ForgotPasswordText {
-                ResetPasswordScreen()
-            }
             Spacer(modifier = Modifier.height(40.dp))
             CustomButton(
                 buttonColor = Constants.hubBabyBlue,
@@ -100,5 +76,9 @@ fun ResetPasswordScreen(navController: NavHostController, viewModel: ResetPasswo
 @Composable
 fun PreviewForgetPasswordScreen() {
     // Mock bir NavController sağlıyoruz.
-    ResetPasswordScreen()
+    val navController = rememberNavController()
+    ResetPasswordScreen(
+        navController = navController,
+        viewModel = ResetPasswordViewModel()
+    )
 }
