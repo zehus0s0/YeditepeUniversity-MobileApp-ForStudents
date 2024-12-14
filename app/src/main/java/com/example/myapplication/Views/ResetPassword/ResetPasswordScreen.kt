@@ -24,18 +24,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Components.CustomButton
 import com.example.myapplication.Utilities.Constants
 import com.example.myapplication.Views.LoginView.ForgotPasswordText
 import com.example.myapplication.Views.LoginView.HeadCircle
+import com.example.myapplication.Views.LoginView.LoginViewModel
 import com.example.myapplication.Views.LoginView.PhoneNumberTextField
 import com.example.myapplication.Views.LoginView.UserNameView
 import com.example.myapplication.Views.LoginView.WelcomeSection
 
 @Composable
-fun ResetPasswordScreen(navController: NavHostController, viewModel: ResetPasswordViewModel = viewModel()) {
+fun ResetPasswordScreen(modifier: Modifier = Modifier, navController: NavController, viewModel: ResetPasswordViewModel) {
+
     val username by viewModel.username.collectAsState()
     val phoneNumber by viewModel.phoneNumber.collectAsState()
 

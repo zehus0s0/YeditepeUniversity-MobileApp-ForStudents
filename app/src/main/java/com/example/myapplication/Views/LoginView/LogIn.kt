@@ -1,12 +1,14 @@
 package com.example.myapplication.Views.LoginView
 
-import android.content.Intent
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -15,44 +17,52 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Components.CustomButton
 import com.example.myapplication.Utilities.Constants
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 
 @Composable
 fun LoginPage(
-    navController: NavHostController,
-
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    loginViewModel: LoginViewModel
 ) {
-    val viewModel: LoginViewModel = viewModel()
-    val username by viewModel.username.collectAsState()
-    val password by viewModel.password.collectAsState()
-    val navigateToHome by viewModel.navigateToHome.collectAsState()
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-    // Kullanıcı login olduktan sonra navigasyonu kontrol et
-    LaunchedEffect(navigateToHome) {
-        if (navigateToHome) {
-            // Login başarılı olduğunda MainActivity'e yönlendir
-            navController.navigate("main") {
-                popUpTo("login") { inclusive = true } // Login sayfasını yığından çıkar
-            }
+    // authState'i authViewModel üzerinden alın
+    val authState by loginViewModel.authState.observeAsState()
+
+    val context = LocalContext.current
+
+    // Auth durumuna göre işlem yap
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Error -> Toast.makeText(
+                context,
+                (authState as AuthState.Error).message,
+                Toast.LENGTH_SHORT
+            ).show()
+            else -> Unit
         }
     }
 
-
+    // UI tanımı (kalan kısım değişmeyecek)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -66,13 +76,23 @@ fun LoginPage(
             verticalArrangement = Arrangement.Center,
         ) {
             HeadCircle()
-            WelcomeSection() // Sola hizalanacak
+            WelcomeSection()
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Kullanıcı adı textfield
-            UserNameView(value = username, onValueChange = viewModel::onUsernameChanged)
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(text = "Email") }
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
-            PasswordView(value = password, onValueChange = viewModel::onPasswordChanged)
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text(text = "Password") }
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             ForgotPasswordText {
@@ -88,15 +108,12 @@ fun LoginPage(
                 buttonHeight = 50,
                 buttonWidth = 150
             ) {
-                // Handle login action
-                val isLoginSuccessful = viewModel.login() // Assume this returns success/failure
-                if (isLoginSuccessful) {
-                    viewModel.setNavigateToHome(true)
-                }
+                loginViewModel.login(email, password)
             }
         }
     }
 }
+
 
 
 
@@ -142,31 +159,33 @@ fun WelcomeSection(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserNameView(value: String, onValueChange: (String) -> Unit) {
-    val customColor = Color(0xFF718A39) // Ortak renk
+    val customColor = Color(0xFF718A39)
 
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange, // dışarıdan gelen değişimi yansıtıyoruz
+        onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp) // Yüksekliği ayarlayarak boyutu küçültüyoruz
+            .height(70.dp)
             .padding(8.dp),
-        shape = RoundedCornerShape(20.dp), // Daha yuvarlak köşeler
-        label = { Text("Username", color = customColor) },
+        shape = RoundedCornerShape(20.dp),
+        placeholder = { Text("Enter your username", color = Color.Gray) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Person,
                 contentDescription = "Username Icon",
-                tint = Constants.hubGreen
+                tint = customColor
             )
         },
-        singleLine = true, // Tek satırda yazılmasını sağlamak
-        isError = value.isEmpty(), // Eğer boşsa hata durumu
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = customColor,
+            unfocusedBorderColor = customColor,
+            cursorColor = customColor,
+            //textColor = Color.Black // Yazının siyah olması için
+        ),
+        singleLine = true,
     )
 }
-
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -176,12 +195,13 @@ fun PasswordView(value: String, onValueChange: (String) -> Unit) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        shape = RoundedCornerShape(20.dp), // Daha yuvarlak köşeler
         modifier = Modifier
-            .fillMaxWidth() // Genişliği tam alacak şekilde
-            .height(60.dp) // Yüksekliği ayarlayarak boyutu küçültüyoruz
-            .padding(8.dp), // İçerik ile kenar arasındaki boşluğu ayarlıyoruz // İçerik ile kenar arasındaki boşluğu ayarlıyoruz
-        label = { Text("Password", color = customColor) },
+            .fillMaxWidth()
+            .height(70.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .padding(8.dp),
+        shape = RoundedCornerShape(20.dp),
+        placeholder = { Text("Enter your password", color = Color.Gray) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Lock,
@@ -189,13 +209,15 @@ fun PasswordView(value: String, onValueChange: (String) -> Unit) {
                 tint = customColor
             )
         },
+        singleLine = true,
+        textStyle = TextStyle(color = Color.Black), // Yazı rengini siyah yapıyoruz
+        visualTransformation = PasswordVisualTransformation(),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = customColor,
             unfocusedBorderColor = customColor,
             cursorColor = customColor,
             containerColor = Color.Transparent
-        ),
-        visualTransformation = PasswordVisualTransformation()
+        )
     )
 }
 
