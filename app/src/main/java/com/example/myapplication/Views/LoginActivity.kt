@@ -12,10 +12,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.MainActivity
 import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
+import com.google.firebase.FirebaseApp
 
-class LoginActivity : ComponentActivity() {
+/*class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        FirebaseApp.initializeApp(this)
         super.onCreate(savedInstanceState)
+        Log.d("ActivityLifecycle", "LoginActivity - onCreate")
         setContent {
             val navController = rememberNavController()
             MaterialTheme {
@@ -42,4 +45,8 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-}
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("ActivityLifecycle", "LoginActivity - onDestroy")
+    }
+}*/

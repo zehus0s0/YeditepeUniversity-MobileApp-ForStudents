@@ -4,10 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import com.example.myapplication.MainActivity
-import com.example.myapplication.Views.LoginActivity
 
 
-class SplashActivity : ComponentActivity() {
+/*class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,4 +36,4 @@ class SplashActivity : ComponentActivity() {
         startActivity(Intent(this, LoginActivity::class.java))
         finish()  // Splash ekranını bitir
     }
-}
+}*/

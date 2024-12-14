@@ -22,19 +22,41 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.DataLayer.Models.CourseModel
 import com.example.myapplication.Utilities.Constants
+import com.example.myapplication.Views.HomeView.HomeViewModel
+import com.example.myapplication.Views.LoginView.AuthState
+import com.example.myapplication.Views.LoginView.LoginViewModel
+import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
-fun HomeView(navController: NavHostController) {
+fun HomeView(modifier: Modifier = Modifier, navController: NavController, loginViewModel: LoginViewModel) {
+
+    val authState by loginViewModel.authState.observeAsState()
+
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Unauthenticated -> {
+                if (navController.currentDestination?.route != "login") {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true } // Döngüyü kırmak için
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
     val courses = listOf(
         CourseModel("VCD 471", "Interactive Design Studio", "Merve Çaşkurlu")
     )
@@ -60,6 +82,12 @@ fun HomeView(navController: NavHostController) {
             color = Color(0xFF88B04B),
             modifier = Modifier.padding(bottom = 16.dp)
         )
+
+        TextButton(onClick = {
+            loginViewModel.signout()
+        }) {
+            Text(text = "Sign out")
+        }
 
         // Arama Çubuğu
         SearchBar()
