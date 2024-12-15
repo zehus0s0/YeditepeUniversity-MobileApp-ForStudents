@@ -79,19 +79,12 @@ fun LoginPage(
             WelcomeSection()
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
+            UserNameView(
                 value = email,
-                onValueChange = { email = it },
-                label = { Text(text = "Email") }
-            )
+                onValueChange = { email = it })
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(text = "Password") }
-            )
+            PasswordView(value = password, onValueChange = {password = it})
 
             Spacer(modifier = Modifier.height(16.dp))
 
