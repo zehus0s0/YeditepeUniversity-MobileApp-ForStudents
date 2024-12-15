@@ -1,5 +1,6 @@
 package com.example.myapplication.Views.LoginView
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,16 +29,19 @@ class LoginViewModel : ViewModel() {
     fun login(email : String,password : String){
 
         if(email.isEmpty() || password.isEmpty()){
+            Log.d("empty", "Email or password can't be empty")
             _authState.value = AuthState.Error("Email or password can't be empty")
             return
         }
         _authState.value = AuthState.Loading
         auth.signInWithEmailAndPassword(email,password)
             .addOnCompleteListener{task->
-                if (task.isSuccessful){
+                if (task.isSuccessful) {
+                    Log.d("FirebaseAuth1", "Login successful!")
                     _authState.value = AuthState.Authenticated
-                }else{
-                    _authState.value = AuthState.Error(task.exception?.message?:"Something went wrong")
+                } else {
+                    Log.e("FirebaseAuth1", "Login failed: ${task.exception?.message}")
+                    _authState.value = AuthState.Error(task.exception?.message ?: "Unknown error occurred")
                 }
             }
     }
