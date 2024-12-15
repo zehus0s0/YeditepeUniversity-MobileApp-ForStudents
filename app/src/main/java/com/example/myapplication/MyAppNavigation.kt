@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.Views.ChatScreen.ChatView
+import com.example.myapplication.Views.ChatScreen.ChatViewModel
 import com.example.myapplication.Views.HomeView
 import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.Views.LoginView.LoginViewModel
@@ -39,6 +41,9 @@ fun MyAppNavigation(
             }
             composable("home") {
                 HomeView(modifier, navController, loginViewModel)
+            }
+            composable("chat") {
+                ChatView(chatViewModel = ChatViewModel())
             }
         }
     )
