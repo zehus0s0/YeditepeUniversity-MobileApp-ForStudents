@@ -52,7 +52,7 @@ fun LoginPage(
     // Auth durumuna göre işlem yap
     LaunchedEffect(authState) {
         when (authState) {
-            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Authenticated -> navController.navigate("chat")
             is AuthState.Error -> Toast.makeText(
                 context,
                 (authState as AuthState.Error).message,
@@ -106,10 +106,6 @@ fun LoginPage(
         }
     }
 }
-
-
-
-
 
 @Composable
 fun HeadCircle() {

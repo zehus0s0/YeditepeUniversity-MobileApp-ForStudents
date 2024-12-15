@@ -1,14 +1,9 @@
 package com.example.myapplication.Views
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,15 +24,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.DataLayer.Models.CourseModel
 import com.example.myapplication.Utilities.Constants
-import com.example.myapplication.Views.HomeView.HomeViewModel
 import com.example.myapplication.Views.LoginView.AuthState
 import com.example.myapplication.Views.LoginView.LoginViewModel
-import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
-import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
 fun HomeView(modifier: Modifier = Modifier, navController: NavController, loginViewModel: LoginViewModel) {
