@@ -1,5 +1,6 @@
 package com.example.myapplication.Views.CourseView
 
+import android.graphics.drawable.Drawable.ConstantState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.DataLayer.Models.CourseModel
+import com.example.myapplication.Utilities.Constants
 
 
 // Composable Screen
@@ -37,7 +39,7 @@ fun CoursesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
+            .background(color = Constants.hubWhite)
     ) {
         // Top Bar
         TopAppBar(
@@ -48,7 +50,7 @@ fun CoursesScreen(
                 }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = Color.White
+                containerColor = Color(0xFFF3F3F3)
             )
         )
 
@@ -85,6 +87,7 @@ fun CoursesScreen(
     }
 }
 
+
 @Composable
 fun TabButton(
     text: String,
@@ -94,24 +97,26 @@ fun TabButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .height(48.dp)
-            .width(160.dp),
+            .height(if (selected) 46.dp else 40.dp) // Aktif buton daha büyük
+            .width(if (selected) 196.dp else 196.dp) // Aktif buton daha geniş
+            .padding(horizontal = 4.dp), // Butonlar arasında mesafe
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.primary else Color.White
+            containerColor = if (selected) Color(0xFFF3F3F3) else Color(0xFFF3F3F3) // Arka plan rengi
         ),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
+            defaultElevation = 4.dp, // Gölge etkisi
+            pressedElevation = 6.dp
         ),
         shape = MaterialTheme.shapes.medium
     ) {
         Text(
             text = text,
-            color = if (selected) Color.White else Color(0xFF76A053),
+            color = if (selected) Color(0xFF718A39) else Color(0xFF718A39), // Yazı rengi
             style = MaterialTheme.typography.labelLarge
         )
     }
 }
+
 
 @Composable
 fun CourseCard(
@@ -125,8 +130,10 @@ fun CourseCard(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
         ),
-        shape = MaterialTheme.shapes.medium
-    ) {
+        shape = MaterialTheme.shapes.medium ,
+        colors = CardDefaults.cardColors(
+            containerColor = Constants.hubWhite // Constants'dan arka plan rengi
+        )    ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
@@ -135,13 +142,13 @@ fun CourseCard(
         ) {
             // Course Code Badge
             Surface(
-                color = Color(0xFFAED1FF),
+                color = Constants.hubBabyBlue,
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
                     text = course.courseCode,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    color = Color.White
+                    color = Constants.hubWhite
                 )
             }
 
@@ -161,7 +168,7 @@ fun CourseCard(
                 Text(
                     text = course.instructorName,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF76A053),
+                    color = Constants.hubGreen,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
