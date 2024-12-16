@@ -125,15 +125,18 @@ fun CourseCard(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(438.dp) // Kart genişliği
+            .height(95.dp) // Kart yüksekliği
+            .padding(start = 16.dp, top = 8.dp) // Sol ve üst boşluk
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
         ),
-        shape = MaterialTheme.shapes.medium ,
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = Constants.hubWhite // Constants'dan arka plan rengi
-        )    ) {
+            containerColor = Constants.hubWhite
+        )
+    ) {
         Row(
             modifier = Modifier
                 .padding(16.dp)
