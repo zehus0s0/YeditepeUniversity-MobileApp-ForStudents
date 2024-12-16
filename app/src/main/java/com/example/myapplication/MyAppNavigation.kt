@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Views.ChatScreen.ChatView
 import com.example.myapplication.Views.ChatScreen.ChatViewModel
 import com.example.myapplication.Views.CourseView.CoursesScreen
+import com.example.myapplication.Views.GroupsView.GroupsScreen
 import com.example.myapplication.Views.HomeView
 import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.Views.LoginView.LoginViewModel
@@ -49,6 +50,9 @@ fun MyAppNavigation(
 
             composable("courses") {
                 CoursesScreen() // authViewModel yeniden oluşturulmaz
+            }
+            composable("groups") {
+                GroupsScreen() // authViewModel yeniden oluşturulmaz
             }
         }
     )
