@@ -61,6 +61,10 @@ fun MyAppNavigation(
             CoursesScreen(
                 onNavigateBack = { navController.navigateUp() }
             )
+
+            composable("groups") {
+                GroupsScreen() // authViewModel yeniden oluşturulmaz
+            }
         }
 
         composable("groups") {
