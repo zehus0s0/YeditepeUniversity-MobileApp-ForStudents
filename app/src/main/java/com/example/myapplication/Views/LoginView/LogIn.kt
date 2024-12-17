@@ -52,7 +52,7 @@ fun LoginPage(
     // Auth durumuna göre işlem yap
     LaunchedEffect(authState) {
         when (authState) {
-            is AuthState.Authenticated -> navController.navigate("chat")
+            is AuthState.Authenticated -> navController.navigate("chat/{chatId}")
             is AuthState.Error -> Toast.makeText(
                 context,
                 (authState as AuthState.Error).message,
