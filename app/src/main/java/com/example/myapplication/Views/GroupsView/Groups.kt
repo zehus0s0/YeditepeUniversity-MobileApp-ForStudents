@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -74,8 +75,8 @@ fun GroupsScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .height(32.dp)
-                .width(145.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Constants.hubGreen),
+                .width(124.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF379634)),
             shape = RoundedCornerShape(20.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -123,6 +124,7 @@ fun GroupCard(
             .fillMaxWidth()
             .width(369.dp)
             .height(95.dp) // Yükseklik ayarlanabilir
+            .padding(5.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Constants.hubWhite),
