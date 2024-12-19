@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Group
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.Utilities.Constants
 
@@ -44,11 +47,14 @@ fun GroupsScreen(
             title = {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+
 
                 ) {
-                    Text("Groups", color = Constants.hubBlack)
-                }
+                    Text(
+                        text = "Groups",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 110.dp) // Başlığı sağa kaydırmak için padding
+                    )                }
             },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
@@ -75,16 +81,18 @@ fun GroupsScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .height(32.dp)
-                .width(124.dp),
+                .width(150.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF379634)),
             shape = RoundedCornerShape(20.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    imageVector = Icons.Default.AddCircle,
                     contentDescription = "Add",
                     tint = Constants.hubWhite,
                     modifier = Modifier.size(18.dp)
+                        .width(16.dp)
+                        .height(16.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
