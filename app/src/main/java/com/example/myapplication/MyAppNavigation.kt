@@ -16,6 +16,7 @@ import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.Views.LoginView.LoginViewModel
 import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
+import com.example.myapplication.Views.ReviewScreen.ReviewScreen // ReviewScreen'i import ettik.
 
 @Composable
 fun MyAppNavigation(
@@ -48,9 +49,8 @@ fun MyAppNavigation(
             HomeView(modifier, navController, loginViewModel)
         }
 
-        // Chat ekranı, chatId parametresi ile
         composable(
-            "chat/{chatId}", // Parametreli navigation
+            "chat/{chatId}",
             arguments = listOf(navArgument("chatId") { type = NavType.StringType })
         ) { backStackEntry ->
             val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
@@ -61,14 +61,19 @@ fun MyAppNavigation(
             CoursesScreen(
                 onNavigateBack = { navController.navigateUp() }
             )
-
-            composable("groups") {
-                GroupsScreen() // authViewModel yeniden oluşturulmaz
-            }
         }
 
         composable("groups") {
             GroupsScreen()
+        }
+
+        // Review ekranı
+        composable("reviews") {
+            ReviewScreen(
+                reviews = emptyList(), // Örnek veriler veya ViewModel'den alınan verilerle doldurulabilir.
+                onTeacherReviewClick = { navController.navigate("teacherReviews") },
+                onCourseReviewClick = { navController.navigate("courseReviews") }
+            )
         }
     }
 }
