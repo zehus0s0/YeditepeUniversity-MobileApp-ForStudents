@@ -37,6 +37,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.myapplication.R
 import com.example.myapplication.Views.LoginView.AuthState
+import com.example.myapplication.Views.ReviewScreen.ReviewScreen
 
 @Composable
 fun MainScreen(loginViewModel: LoginViewModel) {
@@ -48,7 +49,6 @@ fun MainScreen(loginViewModel: LoginViewModel) {
 
     val authState by loginViewModel.authState.observeAsState()
 
-    // Auth state'i kontrol et
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Unauthenticated -> {
@@ -69,7 +69,7 @@ fun MainScreen(loginViewModel: LoginViewModel) {
 
     Scaffold(
         bottomBar = {
-            if (authState is AuthState.Authenticated) {  // Sadece giriş yapmış kullanıcılara göster
+            if (authState is AuthState.Authenticated) {
                 NavigationBar {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route
@@ -102,9 +102,27 @@ fun MainScreen(loginViewModel: LoginViewModel) {
             composable("login") {
                 LoginPage(navController = navController, loginViewModel = loginViewModel)
             }
+
+            composable("resetpw") {
+                ResetPasswordScreen(modifier = Modifier, navController = navController, viewModel = ResetPasswordViewModel())
+            }
+
             composable("home") {
                 HomeView(navController = navController, loginViewModel = loginViewModel)
             }
+
+            composable("courses") {
+                CoursesScreen(
+                    onNavigateBack = { navController.navigateUp() }
+                )
+            }
+
+            composable("groups") {
+                GroupsScreen(
+                    onNavigateBack = { navController.navigateUp() }
+                )
+            }
+
             composable("chatlist") {
                 ChatListScreen(
                     onChatClick = { chatId ->
@@ -112,6 +130,7 @@ fun MainScreen(loginViewModel: LoginViewModel) {
                     }
                 )
             }
+
             composable(
                 "chat/{chatId}",
                 arguments = listOf(navArgument("chatId") { type = NavType.StringType })
@@ -120,6 +139,14 @@ fun MainScreen(loginViewModel: LoginViewModel) {
                 ChatScreen(
                     chatId = chatId,
                     onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable("reviews") {
+                ReviewScreen(
+                    reviews = emptyList(),
+                    onTeacherReviewClick = { navController.navigate("teacherReviews") },
+                    onCourseReviewClick = { navController.navigate("courseReviews") }
                 )
             }
         }

@@ -43,6 +43,7 @@ android {
 dependencies { // Firebase BoM
     implementation("androidx.navigation:navigation-compose:$2.8.4")
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation("io.coil-kt:coil-compose:2.5.0")
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.runtime.livedata)

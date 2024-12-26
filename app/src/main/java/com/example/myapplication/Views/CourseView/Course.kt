@@ -43,7 +43,13 @@ fun CoursesScreen(
     ) {
         // Top Bar
         TopAppBar(
-            title = { Text("Courses", fontSize = 20.sp) },
+            title = {
+                Text(
+                    text = "Courses",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(start = 110.dp) // Başlığı sağa kaydırmak için padding
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -53,6 +59,7 @@ fun CoursesScreen(
                 containerColor = Color(0xFFF3F3F3)
             )
         )
+
 
         // Tabs
         Row(
@@ -127,7 +134,7 @@ fun CourseCard(
         modifier = Modifier
             .width(438.dp) // Kart genişliği
             .height(95.dp) // Kart yüksekliği
-            .padding(start = 16.dp, top = 8.dp) // Sol ve üst boşluk
+            .padding(5.dp)
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
