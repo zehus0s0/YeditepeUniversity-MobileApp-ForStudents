@@ -1,5 +1,7 @@
 package com.example.myapplication.Views.CourseView
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -15,8 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.DrawScope
 
 @Composable
 fun CourseDetailScreen(
@@ -26,111 +34,135 @@ fun CourseDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // TitleCircle ekleniyor
+        Canvas(modifier = Modifier
+            .fillMaxWidth()
+            .height(380.dp)
+        ) {
+            val circleRadius = 800.dp.toPx()
+            val circleCenterX = size.width / 2
+            val circleCenterY = -circleRadius + 210f
+
+            this.drawCircle(
+                color = Color(0xFF64B5F6),
+                radius = circleRadius,
+                center = Offset(circleCenterX, circleCenterY)
+            )
+        }
+
+        // İçerik
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Back button
+            // Geri butonu
             IconButton(
                 onClick = onBackClick,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.align(Alignment.Start)
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = "Geri",
+                    tint = Color.White
                 )
             }
 
-            // Course code and rating
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            Spacer(modifier = Modifier.height(60.dp))
+
+            // Ders kodu
+            Surface(
+                color = Color(0xFF4CAF50),
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text(
-                        text = uiState.courseCode,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                Text(
+                    text = uiState.courseCode,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
-            // Rating stars
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Yıldızlar
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 repeat(5) {
                     Icon(
-                        imageVector = Icons.Filled.Star,
+                        imageVector = Icons.Default.Star,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = Color(0xFF4CAF50),
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
 
-            // Course title
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Ders başlığı
             Text(
                 text = uiState.courseTitle,
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(vertical = 16.dp)
+                textAlign = TextAlign.Center
             )
 
-            // Course description
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Ders açıklaması
             Text(
                 text = uiState.courseDescription,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(bottom = 24.dp)
+                textAlign = TextAlign.Center,
+                color = Color.Gray
             )
 
-            // Instructor section
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Eğitmen bölümü
             Text(
                 text = "Instructor:",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
+                fontWeight = FontWeight.Bold
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 24.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 AsyncImage(
                     model = uiState.instructorImageUrl,
                     contentDescription = "Instructor image",
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(64.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
                 Text(
                     text = uiState.instructorName,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .weight(1f)
+                    modifier = Modifier.padding(start = 16.dp),
+                    color = Color(0xFF4CAF50)
                 )
             }
 
-            // Chat button
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Chat butonu
             Button(
                 onClick = onChatClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF64B5F6)),
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Text(text = "Chat")
+                Text("Chat")
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = null,
@@ -139,4 +171,25 @@ fun CourseDetailScreen(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CourseDetailScreenPreview() {
+    val previewViewModel = CourseDetailViewModel().apply {
+        updateCourseDetails(
+            courseCode = "VCD 471",
+            courseTitle = "Etkileşim Tasarımı Stüdyosu",
+            courseDescription = "Bu derste öğrenciler, etkileşimli tasarımın teorik ve pratik yapısını öğrenir ve projeler aracılığıyla deneyimler. Öğrenciler kodlama ve güncel uygulamalarla etkileşimin yaratıcı kullanımlarını keşfeder ve uygular.",
+            instructorName = "Merve Çaşkurlu",
+            instructorImageUrl = "https://picsum.photos/200", // Örnek bir resim URL'si
+            rating = 5
+        )
+    }
+    
+    CourseDetailScreen(
+        viewModel = previewViewModel,
+        onBackClick = {},
+        onChatClick = {}
+    )
 }
