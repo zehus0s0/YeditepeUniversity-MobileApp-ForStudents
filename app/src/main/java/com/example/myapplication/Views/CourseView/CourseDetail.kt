@@ -1,7 +1,6 @@
 package com.example.myapplication.Views.CourseView
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -24,7 +23,8 @@ import coil.compose.AsyncImage
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.unit.sp
+import com.example.myapplication.Utilities.Constants
 
 @Composable
 fun CourseDetailScreen(
@@ -45,7 +45,7 @@ fun CourseDetailScreen(
             val circleCenterY = -circleRadius + 210f
 
             this.drawCircle(
-                color = Color(0xFF64B5F6),
+                color = Constants.hubBabyBlue,
                 radius = circleRadius,
                 center = Offset(circleCenterX, circleCenterY)
             )
@@ -74,15 +74,28 @@ fun CourseDetailScreen(
 
             // Ders kodu
             Surface(
-                color = Color(0xFF4CAF50),
-                shape = RoundedCornerShape(8.dp)
+                color = Constants.hubGreen,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .width(157.dp)
+                    .height(58.dp)
             ) {
-                Text(
-                    text = uiState.courseCode,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = uiState.courseCode,
+                        color = Constants.hubWhite,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 28.sp
+                        ),
+                        modifier = Modifier
+                            .width(129.dp)
+                            .height(35.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -95,7 +108,7 @@ fun CourseDetailScreen(
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
-                        tint = Color(0xFF4CAF50),
+                        tint = Constants.hubGreen,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -117,7 +130,7 @@ fun CourseDetailScreen(
                 text = uiState.courseDescription,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = Color.Gray
+                color = Constants.hubBlack
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -147,27 +160,38 @@ fun CourseDetailScreen(
                     text = uiState.instructorName,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(start = 16.dp),
-                    color = Color(0xFF4CAF50)
+                    color = Constants.hubGreen
                 )
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Chat butonu
             Button(
                 onClick = onChatClick,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF64B5F6)),
-                shape = RoundedCornerShape(8.dp)
+                    .width(96.dp)
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Constants.hubBabyBlue),
+                shape = RoundedCornerShape(15.dp)
             ) {
-                Text("Chat")
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Chat",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Constants.hubWhite
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = null,
+                        tint = Constants.hubWhite,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
     }
@@ -193,3 +217,4 @@ fun CourseDetailScreenPreview() {
         onChatClick = {}
     )
 }
+//laylay
