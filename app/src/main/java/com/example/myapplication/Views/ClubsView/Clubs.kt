@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
@@ -15,11 +16,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.R
 import com.example.myapplication.Utilities.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,7 +128,7 @@ fun ClubCard(
 ) {
     Card(
         modifier = Modifier
-            .width(438.dp)
+            .fillMaxWidth()
             .height(95.dp)
             .padding(5.dp)
             .clickable(onClick = onClick),
@@ -145,11 +148,18 @@ fun ClubCard(
         ) {
             // Club Icon/Badge
             Surface(
-                color = Constants.hubBabyBlue,
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(48.dp),
+                shape = CircleShape,
+                color = Constants.hubBabyBlue
             ) {
-                // Burada club.clubIcon'u kullanarak bir Icon ekleyebilirsiniz
+                Icon(
+                    painter = painterResource(id = getClubIcon(club.clubIcon)),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .size(24.dp)
+                )
             }
 
             // Club Details
@@ -174,6 +184,15 @@ fun ClubCard(
                 tint = Constants.hubGreen
             )
         }
+    }
+}
+
+fun getClubIcon(iconName: String): Int {
+    return when (iconName.lowercase()) {
+        "cinema" -> R.drawable.ic_cinema
+        "theatre" -> R.drawable.ic_theatre
+        "music" -> R.drawable.ic_music
+        else -> R.drawable.ic_default_club
     }
 }
 
