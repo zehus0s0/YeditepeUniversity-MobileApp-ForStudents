@@ -22,9 +22,9 @@ class ClubsViewModel : ViewModel() {
 
     private val _clubs = MutableStateFlow<List<ClubModel>>(
         listOf(
-            ClubModel("1", "Cinema Club", "cinema_icon"),
-            ClubModel("2", "Theatre Club", "theatre_icon"),
-            ClubModel("3", "Music Club", "music_icon")
+            ClubModel("1", "Cinema Club", "cinema"),
+            ClubModel("2", "Theatre Club", "theatre"),
+            ClubModel("3", "Music Club", "music")
         )
     )
     val clubs: StateFlow<List<ClubModel>> = _clubs.asStateFlow()
