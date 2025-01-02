@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,10 +85,10 @@ fun HomeView(modifier: Modifier = Modifier, navController: NavController, loginV
         Spacer(modifier = Modifier.height(16.dp))
 
         // Kategoriler
-        CategorySection()
+        CategorySection(navController)
         Spacer(modifier = Modifier.height(24.dp))
 
-        MyCoursesWithNavButton()
+        MyCoursesWithNavButton(navController)
 
         // Kaydırılabilir Kurs Listesi
         Box(
@@ -142,7 +143,7 @@ fun MyCoursesSection(courses: List<CourseModel>) {
 }
 
 @Composable
-fun MyCoursesWithNavButton() {
+fun MyCoursesWithNavButton(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -161,14 +162,11 @@ fun MyCoursesWithNavButton() {
 
         // Navigation Button (Right Arrow)
         IconButton(
-            onClick = {
-                // Navigate to the target screen
-                //navController.navigate("targetScreen")
-            }
+            onClick = { navController.navigate("courses") }
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowForward,
-                contentDescription = "Navigate",
+                contentDescription = "Navigate to Courses",
                 tint = Color(0xFF9EC7F2)
             )
         }
@@ -197,8 +195,8 @@ fun SearchBar() {
             .clip(RoundedCornerShape(16.dp)), // Corner radius applied
         colors = TextFieldDefaults.textFieldColors(
             focusedIndicatorColor = Constants.hubGreen, // Focused indicator color
-            unfocusedIndicatorColor = Constants.hubBlack, // Unfocused indicator color
-            containerColor = Constants.hubBlack // Text color
+            unfocusedIndicatorColor = Constants.hubDark, // Unfocused indicator color
+            containerColor = Constants.hubDark // Text color
         )
     )
 }
@@ -206,18 +204,24 @@ fun SearchBar() {
 
 
 @Composable
-fun CategoryCard(title: String, icon: ImageVector, backgroundColor: Color) {
+fun CategoryCard(
+    title: String,
+    icon: ImageVector,
+    backgroundColor: Color,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .size(width = 118.dp, height = 190.dp)
-            .shadow(5.dp, shape = RoundedCornerShape(16.dp)) // Gölgeleri düzgün göstermek için şekil ekledik
-            .padding(4.dp),
+            .shadow(5.dp, shape = RoundedCornerShape(16.dp))
+            .padding(4.dp)
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize() // Column içeriği tam olarak kapsar
-                .padding(5.dp), // İçeriğin kenarlara daha yakın olmasını sağlarız
+                .fillMaxSize()
+                .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -301,13 +305,28 @@ fun CourseCard(courseCode: String, courseTitle: String, instructorName: String) 
 
 
 @Composable
-fun CategorySection() {
+fun CategorySection(navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CategoryCard("Courses", Icons.Default.Book, Color(0xFF1E3A5F))
-        CategoryCard("Groups", Icons.Default.Group, Color(0xFF4285F4))
-        CategoryCard("Clubs", Icons.Default.People, Color(0xFF4285F4))
+        CategoryCard(
+            title = "Courses",
+            icon = Icons.Default.Book,
+            backgroundColor = Color(0xFF1E3A5F),
+            onClick = { navController.navigate("courses") }
+        )
+        CategoryCard(
+            title = "Groups",
+            icon = Icons.Default.Group,
+            backgroundColor = Color(0xFF4285F4),
+            onClick = { navController.navigate("groups") }
+        )
+        CategoryCard(
+            title = "Clubs",
+            icon = Icons.Default.People,
+            backgroundColor = Color(0xFF4285F4),
+            onClick = { navController.navigate("clubs") }
+        )
     }
 }

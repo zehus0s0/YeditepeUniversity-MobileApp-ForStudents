@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.myapplication.Utilities.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,10 +38,10 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(viewModel.chatName) },
+                title = { Text(viewModel.chatName, color = Constants.hubDark) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Constants.hubDark)
                     }
                 }
             )
@@ -79,10 +80,11 @@ fun ChatScreen(
                     value = messageText,
                     onValueChange = { messageText = it },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Mesaj") },
+                    placeholder = { Text("Mesaj", color = Constants.hubDark) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         containerColor = Color.Transparent,
-                        unfocusedBorderColor = Color.LightGray
+                        unfocusedBorderColor = Constants.hubBabyBlue,
+                        focusedBorderColor = Constants.hubGreen
                     ),
                     shape = RoundedCornerShape(24.dp)
                 )
@@ -95,7 +97,11 @@ fun ChatScreen(
                         }
                     }
                 ) {
-                    Icon(Icons.Default.Send, contentDescription = "Gönder")
+                    Icon(
+                        Icons.Default.Send, 
+                        contentDescription = "Gönder",
+                        tint = Constants.hubGreen
+                    )
                 }
             }
         }
@@ -122,14 +128,14 @@ fun MessageItem(
                     )
                 )
                 .background(
-                    if (isOwnMessage) MaterialTheme.colorScheme.primary
+                    if (isOwnMessage) Constants.hubBabyBlue
                     else Color.LightGray
                 )
                 .padding(12.dp)
         ) {
             Text(
                 text = message.text,
-                color = if (isOwnMessage) Color.White else Color.Black,
+                color = if (isOwnMessage) Color.White else Constants.hubDark,
                 modifier = Modifier.widthIn(max = 260.dp)
             )
         }

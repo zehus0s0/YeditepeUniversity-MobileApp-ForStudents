@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.DataLayer.Models.ChatData
 import com.example.myapplication.DataLayer.Models.UserData
@@ -30,6 +31,7 @@ import com.example.myapplication.R
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import coil.compose.AsyncImage
+import com.example.myapplication.Utilities.Constants
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,14 +50,14 @@ fun ChatListScreen(
         topBar = {
             Column {
                 TopAppBar(
-                    title = { Text("Chats") },
+                    title = { Text("Chats", color = Constants.hubDark) },
                     navigationIcon = {
                         IconButton(onClick = { /* Geri git */ }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Constants.hubDark)
                         }
                     }
                 )
-                // Tab seçenekleri
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -69,12 +71,12 @@ fun ChatListScreen(
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable { selectedTab = tab }
                                 .background(
-                                    if (selectedTab == tab) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                    if (selectedTab == tab) Constants.hubBabyBlue.copy(alpha = 0.1f)
                                     else Color.Transparent
                                 )
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = if (selectedTab == tab) MaterialTheme.colorScheme.primary
-                                   else MaterialTheme.colorScheme.onSurface
+                            color = if (selectedTab == tab) Constants.hubGreen
+                                   else Constants.hubDark
                         )
                     }
                 }
@@ -83,7 +85,7 @@ fun ChatListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showNewChatDialog = true },
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = Constants.hubBabyBlue
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Yeni Sohbet", tint = Color.White)
             }
@@ -124,6 +126,35 @@ fun ChatListScreen(
 }
 
 @Composable
+fun TabButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .height(46.dp)
+            .width(196.dp)
+            .padding(horizontal = 4.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFF3F3F3)
+        ),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 6.dp
+        ),
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Text(
+            text = text,
+            color = if (selected) Constants.hubGreen else Constants.hubGreen,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+
+@Composable
 fun ChatListItem(
     chat: ChatData,
     onClick: () -> Unit
@@ -135,11 +166,10 @@ fun ChatListItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Profil resmi
         Box(
             modifier = Modifier
                 .size(50.dp)
-                .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
+                .background(color = Constants.hubBabyBlue, shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -156,7 +186,8 @@ fun ChatListItem(
         ) {
             Text(
                 text = chat.chatName,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = Constants.hubDark
             )
             Text(
                 text = chat.lastMessage,

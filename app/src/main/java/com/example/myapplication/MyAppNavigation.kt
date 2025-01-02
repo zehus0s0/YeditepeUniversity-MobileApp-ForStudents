@@ -4,44 +4,95 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.myapplication.Views.ChatScreen.ChatScreen
 import com.example.myapplication.Views.CourseView.CoursesScreen
 import com.example.myapplication.Views.GroupsView.GroupsScreen
 import com.example.myapplication.Views.HomeView
+import com.example.myapplication.Views.LoginView.AuthState
 import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.Views.LoginView.LoginViewModel
 import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 import com.example.myapplication.Views.ChatList.ChatListScreen
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.myapplication.Views.LoginView.AuthState
 import com.example.myapplication.Views.ReviewScreen.ReviewScreen
+
+sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
+    object Home : BottomNavItem("home", Icons.Default.Home, "Home")
+    object Reviews : BottomNavItem("reviews", Icons.Default.Star, "Reviews")
+    object Account : BottomNavItem("account", Icons.Default.Person, "Account")
+    object Chat : BottomNavItem("chatlist", Icons.Default.Chat, "Chat")
+}
+
+@Composable
+fun AppBottomNavigation(navController: NavController) {
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Reviews,
+        BottomNavItem.Account,
+        BottomNavItem.Chat
+    )
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    NavigationBar(
+        containerColor = Color.White,
+    ) {
+        items.forEach { item ->
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        imageVector = item.icon,
+                        contentDescription = item.label,
+                        tint = Color(0xFF4285F4)
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        color = Color(0xFF4285F4)
+                    )
+                },
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Color(0xFF4285F4),
+                    unselectedIconColor = Color(0xFF4285F4),
+                    indicatorColor = Color.White
+                )
+            )
+        }
+    }
+}
 
 @Composable
 fun MainScreen(loginViewModel: LoginViewModel) {
     val navController = rememberNavController()
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Chat
-    )
-
     val authState by loginViewModel.authState.observeAsState()
 
     LaunchedEffect(authState) {
@@ -65,27 +116,7 @@ fun MainScreen(loginViewModel: LoginViewModel) {
     Scaffold(
         bottomBar = {
             if (authState is AuthState.Authenticated) {
-                NavigationBar {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    val currentRoute = navBackStackEntry?.destination?.route
-
-                    items.forEach { item ->
-                        NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) },
-                            selected = currentRoute == item.route,
-                            onClick = {
-                                navController.navigate(item.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        )
-                    }
-                }
+                AppBottomNavigation(navController)
             }
         }
     ) { innerPadding ->
@@ -99,7 +130,11 @@ fun MainScreen(loginViewModel: LoginViewModel) {
             }
 
             composable("resetpw") {
-                ResetPasswordScreen(modifier = Modifier, navController = navController, viewModel = ResetPasswordViewModel())
+                ResetPasswordScreen(
+                    modifier = Modifier,
+                    navController = navController,
+                    viewModel = ResetPasswordViewModel()
+                )
             }
 
             composable("home") {
@@ -144,11 +179,15 @@ fun MainScreen(loginViewModel: LoginViewModel) {
                     onCourseReviewClick = { navController.navigate("courseReviews") }
                 )
             }
+
+            composable("account") {
+                // Add your Account screen implementation here
+                // For now, using a placeholder Text
+                Text(
+                    text = "Account Screen",
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
-}
-
-sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
-    object Home : BottomNavItem("home", Icons.Default.Home, "Ana Sayfa")
-    object Chat : BottomNavItem("chatlist", Icons.Default.Chat, "Sohbet")
 }
