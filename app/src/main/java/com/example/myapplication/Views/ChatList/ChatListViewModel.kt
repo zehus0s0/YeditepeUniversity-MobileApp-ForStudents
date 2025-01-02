@@ -130,6 +130,9 @@ class ChatListViewModel : ViewModel() {
                                 .document(chatId)
                                 .set(userChatData)
                         }
+                        .addOnFailureListener { e ->
+                            Log.e("ChatListViewModel", "Error creating chat", e)
+                        }
                 }
         }
     }

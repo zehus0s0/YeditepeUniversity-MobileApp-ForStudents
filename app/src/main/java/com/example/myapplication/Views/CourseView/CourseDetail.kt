@@ -130,7 +130,7 @@ fun CourseDetailScreen(
                 text = uiState.courseDescription,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = Constants.hubBlack
+                color = Constants.hubDark
             )
 
             Spacer(modifier = Modifier.height(32.dp))

@@ -1,5 +1,6 @@
 package com.example.myapplication.Views.ChatScreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
@@ -38,52 +39,78 @@ class ChatViewModel : ViewModel() {
             .collection("messages")
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) return@addSnapshotListener
+                if (error != null) {
+                    Log.e("ChatViewModel", "Error loading messages", error)
+                    return@addSnapshotListener
+                }
 
                 val messageList = snapshot?.documents?.mapNotNull { doc ->
                     val data = doc.data ?: return@mapNotNull null
                     val timestamp = data["timestamp"] as? Timestamp
+                    val text = data["text"] as? String ?: return@mapNotNull null
+                    val senderId = data["senderId"] as? String ?: return@mapNotNull null
+
                     ChatMessage(
                         id = doc.id,
-                        text = data["text"] as? String ?: "",
-                        senderId = data["senderId"] as? String ?: "",
+                        text = text,
+                        senderId = senderId,
                         timestamp = formatTimestamp(timestamp)
                     )
                 } ?: emptyList()
 
+                Log.d("ChatViewModel", "Loaded messages: ${messageList.size}")
                 _messages.value = messageList
             }
     }
 
     fun sendMessage(chatId: String, text: String) {
+        if (text.isBlank()) return
+
+        val currentTime = Timestamp.now()
         val message = hashMapOf(
             "text" to text,
             "senderId" to (currentUserId ?: return),
-            "timestamp" to Timestamp.now()
+            "timestamp" to currentTime
         )
+
+        Log.d("ChatViewModel", "Sending message: $text")
 
         firestore.collection("chats").document(chatId)
             .collection("messages")
             .add(message)
             .addOnSuccessListener { messageRef ->
+                Log.d("ChatViewModel", "Message sent successfully")
+                
                 // Son mesajı güncelle
                 firestore.collection("chats").document(chatId)
                     .update(
                         mapOf(
                             "lastMessage" to text,
-                            "lastMessageTimestamp" to Timestamp.now()
+                            "lastMessageTimestamp" to currentTime
                         )
                     )
 
-                // userChats koleksiyonunda da son mesaj zamanını güncelle
-                val participants = listOf(currentUserId ?: return@addOnSuccessListener)
-                participants.forEach { userId ->
-                    firestore.collection("userChats")
-                        .document(userId)
-                        .collection("chats")
-                        .document(chatId)
-                        .update("lastMessageTimestamp", Timestamp.now())
-                }
+                // userChats koleksiyonunda son mesaj zamanını güncelle
+                firestore.collection("chats").document(chatId)
+                    .get()
+                    .addOnSuccessListener { chatDoc ->
+                        val participants = chatDoc.get("participants") as? List<String> ?: return@addOnSuccessListener
+                        participants.forEach { userId ->
+                            firestore.collection("userChats")
+                                .document(userId)
+                                .collection("chats")
+                                .document(chatId)
+                                .update(
+                                    mapOf(
+                                        "lastMessageTimestamp" to currentTime,
+                                        "lastMessage" to text
+                                    )
+                                )
+                        }
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e("ChatViewModel", "Error sending message", e)
             }
     }
 

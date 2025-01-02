@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Group
@@ -61,7 +59,7 @@ fun GroupsScreen(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = Constants.hubBlack
+                        tint = Constants.hubDark
                     )
                 }
             },
@@ -166,7 +164,7 @@ fun GroupCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp),
-                color = Constants.hubBlack // Yazı rengi
+                color = Constants.hubDark // Yazı rengi
             )
 
             // Arrow Icon
