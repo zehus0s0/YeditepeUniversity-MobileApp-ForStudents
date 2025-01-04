@@ -17,6 +17,7 @@ import com.example.myapplication.Views.LoginView.LoginViewModel
 import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 import com.example.myapplication.Views.ReviewScreen.ReviewScreen // ReviewScreen'i import ettik.
+import com.example.myapplication.Views.ReviewScreen.Teacher
 
 @Composable
 fun MyAppNavigation(
@@ -67,10 +68,8 @@ fun MyAppNavigation(
             GroupsScreen()
         }
 
-        // Review ekranı
         composable("reviews") {
             ReviewScreen(
-                reviews = emptyList(), // Örnek veriler veya ViewModel'den alınan verilerle doldurulabilir.
                 onTeacherReviewClick = { navController.navigate("teacherReviews") },
                 onCourseReviewClick = { navController.navigate("courseReviews") }
             )

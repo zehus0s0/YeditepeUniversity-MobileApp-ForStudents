@@ -10,5 +10,7 @@ data class Review(
 data class Teacher(
     val id: Int,
     val name: String,
-    val rating: Float // Öğretmen değerlendirme puanı
+    val rating: Float,
+    val photo: Int, // Bu satır fotoğraf için
+
 )
