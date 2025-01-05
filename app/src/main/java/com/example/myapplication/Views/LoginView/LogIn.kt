@@ -1,6 +1,5 @@
 package com.example.myapplication.Views.LoginView
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.material3.MaterialTheme
@@ -28,9 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.myapplication.Components.CustomButton
 import com.example.myapplication.Utilities.Constants
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
@@ -52,7 +49,10 @@ fun LoginPage(
     // Auth durumuna göre işlem yap
     LaunchedEffect(authState) {
         when (authState) {
-            is AuthState.Authenticated -> navController.navigate("Reviews")
+            is AuthState.Authenticated -> navController.navigate("chatlist") {
+                // Login ekranına geri dönüşü engelle
+                popUpTo("login") { inclusive = true }
+            }
             is AuthState.Error -> Toast.makeText(
                 context,
                 (authState as AuthState.Error).message,
