@@ -32,6 +32,7 @@ import com.example.myapplication.Views.ChatList.ChatListScreen
 import com.example.myapplication.Views.ReviewScreen.ReviewScreen
 import com.example.myapplication.Views.CourseView.CourseDetailScreen
 import com.example.myapplication.Views.CourseView.CourseDetailViewModel
+import com.example.myapplication.Views.ReviewScreen.ReviewCoursesScreen
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
     object Home : BottomNavItem("home", Icons.Default.Home, "Home")
@@ -188,7 +189,7 @@ fun MainScreen(loginViewModel: LoginViewModel) {
 
             composable("reviews") {
                 ReviewScreen(
-                    reviews = emptyList(),
+                    //reviews = emptyList(),
                     onTeacherReviewClick = { navController.navigate("teacherReviews") },
                     onCourseReviewClick = { navController.navigate("courseReviews") }
                 )
@@ -200,6 +201,11 @@ fun MainScreen(loginViewModel: LoginViewModel) {
                 Text(
                     text = "Account Screen",
                     modifier = Modifier.padding(16.dp)
+                )
+            }
+            composable("coursesReview") {
+                ReviewCoursesScreen(
+                    onNavigateBack = { navController.navigateUp() }
                 )
             }
         }
