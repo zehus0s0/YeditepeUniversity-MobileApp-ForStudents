@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Group
@@ -18,8 +18,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.Utilities.Constants
 
@@ -43,18 +45,21 @@ fun GroupsScreen(
             title = {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+
 
                 ) {
-                    Text("Groups", color = Constants.hubBlack)
-                }
+                    Text(
+                        text = "Groups",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 110.dp) // Başlığı sağa kaydırmak için padding
+                    )                }
             },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = Constants.hubBlack
+                        tint = Constants.hubDark
                     )
                 }
             },
@@ -74,16 +79,18 @@ fun GroupsScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .height(32.dp)
-                .width(145.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Constants.hubGreen),
+                .width(150.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF379634)),
             shape = RoundedCornerShape(20.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    imageVector = Icons.Default.AddCircle,
                     contentDescription = "Add",
                     tint = Constants.hubWhite,
                     modifier = Modifier.size(18.dp)
+                        .width(16.dp)
+                        .height(16.dp),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -123,6 +130,7 @@ fun GroupCard(
             .fillMaxWidth()
             .width(369.dp)
             .height(95.dp) // Yükseklik ayarlanabilir
+            .padding(5.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Constants.hubWhite),
@@ -156,7 +164,7 @@ fun GroupCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp),
-                color = Constants.hubBlack // Yazı rengi
+                color = Constants.hubDark // Yazı rengi
             )
 
             // Arrow Icon

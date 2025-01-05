@@ -12,21 +12,15 @@ import androidx.compose.ui.Modifier
 import com.example.myapplication.Views.LoginView.LoginViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("MainActivityOnCreate", "Burada sıkıntı yok")
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val authViewModel : LoginViewModel by viewModels()
+        val authViewModel: LoginViewModel by viewModels()
+        
         setContent {
             MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MyAppNavigation(
-                        modifier = Modifier.padding(innerPadding),
-                        loginViewModel = authViewModel
-                    )
-                }
+                MainScreen(loginViewModel = authViewModel)
             }
         }
     }

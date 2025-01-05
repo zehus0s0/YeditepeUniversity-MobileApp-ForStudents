@@ -1,11 +1,11 @@
-package com.example.myapplication.Views.CourseView
+package com.example.myapplication.Views.ClubsView
 
-import android.graphics.drawable.Drawable.ConstantState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
@@ -16,24 +16,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.DataLayer.Models.CourseModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.R
 import com.example.myapplication.Utilities.Constants
 
-
-// Composable Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoursesScreen(
-    viewModel: CoursesViewModel = viewModel(),
+fun ClubsScreen(
+    viewModel: ClubsViewModel = viewModel(),
     onNavigateBack: () -> Unit = {},
-    onCourseClick: (CourseModel) -> Unit = {}
+    onClubClick: (ClubModel) -> Unit = {}
 ) {
-    val courses by viewModel.courses.collectAsState()
+    val clubs by viewModel.clubs.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
 
     Column(
@@ -45,9 +44,9 @@ fun CoursesScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "Courses",
+                    text = "Clubs",
                     fontSize = 20.sp,
-                    modifier = Modifier.padding(start = 110.dp) // Başlığı sağa kaydırmak için padding
+                    modifier = Modifier.padding(start = 110.dp)
                 )
             },
             navigationIcon = {
@@ -60,7 +59,6 @@ fun CoursesScreen(
             )
         )
 
-
         // Tabs
         Row(
             modifier = Modifier
@@ -69,31 +67,30 @@ fun CoursesScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             TabButton(
-                text = "My Courses",
-                selected = selectedTab == CourseTab.MY_COURSES,
-                onClick = { viewModel.onTabSelected(CourseTab.MY_COURSES) }
+                text = "My Clubs",
+                selected = selectedTab == ClubTab.MY_CLUBS,
+                onClick = { viewModel.onTabSelected(ClubTab.MY_CLUBS) }
             )
             TabButton(
-                text = "All Courses",
-                selected = selectedTab == CourseTab.ALL_COURSES,
-                onClick = { viewModel.onTabSelected(CourseTab.ALL_COURSES) }
+                text = "All Clubs",
+                selected = selectedTab == ClubTab.ALL_CLUBS,
+                onClick = { viewModel.onTabSelected(ClubTab.ALL_CLUBS) }
             )
         }
 
-        // Course List
+        // Clubs List
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(courses) { course ->
-                CourseCard(course = course, onClick = { onCourseClick(course) })
+            items(clubs) { club ->
+                ClubCard(club = club, onClick = { onClubClick(club) })
             }
         }
     }
 }
-
 
 @Composable
 fun TabButton(
@@ -104,36 +101,35 @@ fun TabButton(
     Button(
         onClick = onClick,
         modifier = Modifier
-            .height(if (selected) 46.dp else 40.dp) // Aktif buton daha büyük
-            .width(if (selected) 196.dp else 196.dp) // Aktif buton daha geniş
-            .padding(horizontal = 4.dp), // Butonlar arasında mesafe
+            .height(46.dp)
+            .width(196.dp)
+            .padding(horizontal = 4.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) Color(0xFFF3F3F3) else Color(0xFFF3F3F3) // Arka plan rengi
+            containerColor = Color(0xFFF3F3F3)
         ),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 4.dp, // Gölge etkisi
+            defaultElevation = 4.dp,
             pressedElevation = 6.dp
         ),
         shape = MaterialTheme.shapes.medium
     ) {
         Text(
             text = text,
-            color = if (selected) Color(0xFF718A39) else Color(0xFF718A39), // Yazı rengi
+            color = if (selected) Constants.hubGreen else Constants.hubGreen,
             style = MaterialTheme.typography.labelLarge
         )
     }
 }
 
-
 @Composable
-fun CourseCard(
-    course: CourseModel,
+fun ClubCard(
+    club: ClubModel,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .width(438.dp) // Kart genişliği
-            .height(95.dp) // Kart yüksekliği
+            .fillMaxWidth()
+            .height(95.dp)
             .padding(5.dp)
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(
@@ -150,35 +146,32 @@ fun CourseCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Course Code Badge
+            // Club Icon/Badge
             Surface(
-                color = Constants.hubBabyBlue,
-                shape = MaterialTheme.shapes.small
+                modifier = Modifier.size(48.dp),
+                shape = CircleShape,
+                color = Constants.hubBabyBlue
             ) {
-                Text(
-                    text = course.courseCode,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    color = Constants.hubWhite
+                Icon(
+                    painter = painterResource(id = getClubIcon(club.clubIcon)),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .size(24.dp)
                 )
             }
 
-            // Course Details
+            // Club Details
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp)
             ) {
                 Text(
-                    text = course.courseTitle,
+                    text = club.clubName,
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = course.instructorName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Constants.hubGreen,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -187,15 +180,24 @@ fun CourseCard(
             // Arrow Icon
             Icon(
                 imageVector = Icons.Default.ChevronRight,
-                contentDescription = "View Course",
-                tint = Color(0xFF76A053)
+                contentDescription = "View Club",
+                tint = Constants.hubGreen
             )
         }
     }
 }
 
+fun getClubIcon(iconName: String): Int {
+    return when (iconName.lowercase()) {
+        "cinema" -> R.drawable.ic_cinema
+        "theatre" -> R.drawable.ic_theatre
+        "music" -> R.drawable.ic_music
+        else -> R.drawable.ic_default_club
+    }
+}
+
 @Preview
 @Composable
-fun myPreview(){
-    CoursesScreen()
-}
+fun ClubsScreenPreview() {
+    ClubsScreen()
+} 
