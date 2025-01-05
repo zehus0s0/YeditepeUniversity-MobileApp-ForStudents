@@ -30,6 +30,8 @@ import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
 import com.example.myapplication.Views.ChatList.ChatListScreen
 import com.example.myapplication.Views.ReviewScreen.ReviewScreen
+import com.example.myapplication.Views.CourseView.CourseDetailScreen
+import com.example.myapplication.Views.CourseView.CourseDetailViewModel
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
     object Home : BottomNavItem("home", Icons.Default.Home, "Home")
@@ -144,6 +146,18 @@ fun MainScreen(loginViewModel: LoginViewModel) {
             composable("courses") {
                 CoursesScreen(
                     onNavigateBack = { navController.navigateUp() }
+                )
+            }
+
+            composable(
+                "course_detail/{courseCode}",
+                arguments = listOf(navArgument("courseCode") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val courseCode = backStackEntry.arguments?.getString("courseCode") ?: return@composable
+                CourseDetailScreen(
+                    viewModel = CourseDetailViewModel(),
+                    onBackClick = { navController.navigateUp() },
+                    onChatClick = { /* Chat işlevi eklenecek */ }
                 )
             }
 
