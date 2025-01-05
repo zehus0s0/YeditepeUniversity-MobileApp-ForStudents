@@ -26,6 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.R
+import android.util.Log
+
+
+
+
 
 val OpenSansSemiBold = FontFamily(
     Font(R.font.open_sans_semibold)
@@ -62,7 +67,6 @@ fun ReviewScreen(
                 .height(34.dp)
         )
 
-        // "Reviews" ile butonlar arasındaki mesafeyi artırdık
         Spacer(modifier = Modifier.height(24.dp))
 
         Row(
@@ -90,13 +94,17 @@ fun ReviewScreen(
     }
 }
 
+
 @Composable
 fun CustomShadowButton(
     text: String,
     onClick: () -> Unit
 ) {
     Button(
-        onClick = onClick,
+        onClick = {
+            Log.d("ButtonClicked", "$text button clicked")
+            onClick()
+        },
         modifier = Modifier
             .width(180.dp)
             .height(43.dp)

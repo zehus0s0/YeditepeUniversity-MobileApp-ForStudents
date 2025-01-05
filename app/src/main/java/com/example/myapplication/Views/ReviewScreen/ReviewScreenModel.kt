@@ -14,3 +14,10 @@ data class Teacher(
     val photo: Int, // Bu satır fotoğraf için
 
 )
+data class Course(
+    val id: Int,
+    val code: String,         // Dersin kodu (örneğin: VCD 471)
+    val name: String,         // Dersin adı
+    val instructor: String,   // Dersi veren öğretmen
+    val rating: Float         // 1-5 arasında bir puan
+)

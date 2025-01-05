@@ -16,8 +16,10 @@ import com.example.myapplication.Views.LoginView.LoginPage
 import com.example.myapplication.Views.LoginView.LoginViewModel
 import com.example.myapplication.Views.ResetPassword.ResetPasswordScreen
 import com.example.myapplication.Views.ResetPassword.ResetPasswordViewModel
-import com.example.myapplication.Views.ReviewScreen.ReviewScreen // ReviewScreen'i import ettik.
+import com.example.myapplication.Views.ReviewScreen.ReviewScreen
 import com.example.myapplication.Views.ReviewScreen.Teacher
+import com.example.myapplication.Views.ReviewScreen.ReviewCoursesScreen // CoursesReviewScreen import edildi.
+import android.util.Log
 
 @Composable
 fun MyAppNavigation(
@@ -25,7 +27,6 @@ fun MyAppNavigation(
     loginViewModel: LoginViewModel
 ) {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
         startDestination = "splash"
@@ -37,19 +38,15 @@ fun MyAppNavigation(
                 }
             }
         }
-
         composable("login") {
             LoginPage(modifier, navController, loginViewModel)
         }
-
         composable("resetpw") {
             ResetPasswordScreen(modifier, navController, ResetPasswordViewModel())
         }
-
         composable("home") {
             HomeView(modifier, navController, loginViewModel)
         }
-
         composable(
             "chat/{chatId}",
             arguments = listOf(navArgument("chatId") { type = NavType.StringType })
@@ -57,22 +54,28 @@ fun MyAppNavigation(
             val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
             ChatView(chatId = chatId)
         }
-
         composable("courses") {
             CoursesScreen(
                 onNavigateBack = { navController.navigateUp() }
             )
         }
-
         composable("groups") {
             GroupsScreen()
         }
-
         composable("reviews") {
             ReviewScreen(
                 onTeacherReviewClick = { navController.navigate("teacherReviews") },
-                onCourseReviewClick = { navController.navigate("courseReviews") }
+                onCourseReviewClick = {
+                    Log.d("Navigation", "Navigating to coursesReview")
+                    navController.navigate("coursesReview")
+                }
             )
         }
+        composable("coursesReview") {
+            ReviewCoursesScreen(
+                onNavigateBack = { navController.navigateUp() }
+            )
+        }
+
     }
 }

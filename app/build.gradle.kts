@@ -46,7 +46,7 @@ android {
 
     dependencies {
         // Firebase BoM
-        implementation("androidx.navigation:navigation-compose:$2.8.4")
+        implementation("androidx.navigation:navigation-compose:2.8.4")
         implementation(libs.androidx.navigation.runtime.ktx)
         implementation(libs.firebase.auth.ktx)
         implementation(libs.firebase.crashlytics.buildtools)
@@ -74,6 +74,8 @@ android {
         androidTestImplementation(libs.androidx.ui.test.junit4)
         debugImplementation(libs.androidx.ui.tooling)
         debugImplementation(libs.androidx.ui.test.manifest)
+
+
 
         // Coil kütüphanesini ekledim.
         implementation("io.coil-kt:coil-compose:2.0.0") // En son Coil sürümünü kontrol edin
