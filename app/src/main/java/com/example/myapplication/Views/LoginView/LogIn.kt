@@ -132,7 +132,7 @@ fun WelcomeSection(){
         text = "Hello Student!",
         style = MaterialTheme.typography.headlineMedium,
         fontSize = 35.sp,
-        color = Constants.hubBlack,
+        color = Constants.hubDark,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Start,
         modifier = Modifier.padding(bottom = 4.dp)
@@ -226,7 +226,7 @@ fun PhoneNumberTextField(viewModel: ResetPasswordViewModel) {
             .height(60.dp) // Yüksekliği ayarlayarak boyutu küçültüyoruz
             .padding(8.dp),
         shape = RoundedCornerShape(20.dp), // Daha yuvarlak köşeler
-        label = { Text("Username", color = Constants.hubBlack) },
+        label = { Text("Username", color = Constants.hubDark) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Person,

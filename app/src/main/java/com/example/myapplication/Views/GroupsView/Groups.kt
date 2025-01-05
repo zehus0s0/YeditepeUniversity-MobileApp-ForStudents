@@ -46,7 +46,7 @@ fun GroupsScreen(
                     contentAlignment = Alignment.Center
 
                 ) {
-                    Text("Groups", color = Constants.hubBlack)
+                    Text("Groups", color = Constants.hubDark)
                 }
             },
             navigationIcon = {
@@ -54,7 +54,7 @@ fun GroupsScreen(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = Constants.hubBlack
+                        tint = Constants.hubDark
                     )
                 }
             },
@@ -156,7 +156,7 @@ fun GroupCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp),
-                color = Constants.hubBlack // Yazı rengi
+                color = Constants.hubDark // Yazı rengi
             )
 
             // Arrow Icon

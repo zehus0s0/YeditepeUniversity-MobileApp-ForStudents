@@ -7,7 +7,7 @@ object Constants {
     //*********
     // RENKLER
     val hubBabyBlue = Color(0xFF9EC7F2) // Bebek mavisi
-    val hubBlack = Color(0xFF342E37) // Siyah
+    val hubDark = Color(0xFF342E37) // Siyah
     val hubWhite = Color(0xFFF3F3F3) // Beyaz
     val hubGreen = Color(0xFF718A39) // Fıstık Yeşili
     val hubDarkBlue = Color(0xFF1B4965) // Koyu Mavi
