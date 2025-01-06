@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -300,6 +301,81 @@ fun UserListItem(
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun ChatListScreenPreview() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column {
+            // Top Bar
+            TopAppBar(
+                title = { Text("Chats", color = Constants.hubDark) },
+                navigationIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Constants.hubDark)
+                    }
+                }
+            )
+
+            // Tabs
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                listOf("Private Chats", "Group Chats").forEach { tab ->
+                    Text(
+                        text = tab,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .clickable { }
+                            .background(
+                                if (tab == "Private Chats") Constants.hubBabyBlue.copy(alpha = 0.1f)
+                                else Color.Transparent
+                            )
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = if (tab == "Private Chats") Constants.hubGreen
+                               else Constants.hubDark
+                    )
+                }
+            }
+
+            // Chat List
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                items(3) { index ->
+                    ChatListItem(
+                        chat = ChatData(
+                            chatId = index.toString(),
+                            chatName = when(index) {
+                                0 -> "Ahmet Yılmaz"
+                                1 -> "VCD 471 Grup"
+                                else -> "Merve Çaşkurlu"
+                            },
+                            chatType = if(index == 1) "GROUP" else "PRIVATE",
+                            lastMessage = when(index) {
+                                0 -> "Merhaba, ödev hakkında konuşabilir miyiz?"
+                                1 -> "Proje teslim tarihi ne zaman?"
+                                else -> "Teşekkür ederim"
+                            },
+                            lastMessageTimestamp = Timestamp(Date()),
+                            participants = listOf("1", "2")
+                        ),
+                        onClick = {}
+                    )
+                }
             }
         }
     }

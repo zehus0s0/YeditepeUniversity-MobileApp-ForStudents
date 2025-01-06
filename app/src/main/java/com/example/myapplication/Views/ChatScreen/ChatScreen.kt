@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.Utilities.Constants
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,5 +147,94 @@ fun MessageItem(
             modifier = Modifier.padding(top = 4.dp),
             textAlign = if (isOwnMessage) TextAlign.End else TextAlign.Start
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun ChatScreenPreview() {
+    val fakeMessages = listOf(
+        ChatMessage(
+            id = "1",
+            text = "Merhaba, ödev hakkında konuşabilir miyiz?",
+            senderId = "2",
+            timestamp = "10:30"
+        ),
+        ChatMessage(
+            id = "2",
+            text = "Tabii ki, hangi konu hakkında yardıma ihtiyacın var?",
+            senderId = "1", // current user
+            timestamp = "10:31"
+        ),
+        ChatMessage(
+            id = "3",
+            text = "VCD 471 projesi için kaynak araştırması yapıyorum da",
+            senderId = "2",
+            timestamp = "10:32"
+        )
+    )
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column {
+            // Top Bar
+            TopAppBar(
+                title = { Text("Ahmet Yılmaz", color = Constants.hubDark) },
+                navigationIcon = {
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Constants.hubDark)
+                    }
+                }
+            )
+
+            // Messages
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                reverseLayout = true
+            ) {
+                items(items = fakeMessages) { message ->
+                    MessageItem(
+                        message = message,
+                        isOwnMessage = message.senderId == "1"
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+            // Message Input
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = "",
+                    onValueChange = {},
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text("Mesaj", color = Constants.hubDark) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent,
+                        unfocusedBorderColor = Constants.hubBabyBlue,
+                        focusedBorderColor = Constants.hubGreen
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                )
+
+                IconButton(onClick = {}) {
+                    Icon(
+                        Icons.Default.Send,
+                        contentDescription = "Gönder",
+                        tint = Constants.hubGreen
+                    )
+                }
+            }
+        }
     }
 }
