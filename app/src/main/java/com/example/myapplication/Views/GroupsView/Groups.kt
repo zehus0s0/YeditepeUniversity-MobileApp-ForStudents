@@ -48,11 +48,16 @@ fun GroupsScreen(
 
 
                 ) {
+<<<<<<< HEAD
+                    Text("Groups", color = Constants.hubDark)
+                }
+=======
                     Text(
                         text = "Groups",
                         fontSize = 20.sp,
                         modifier = Modifier.padding(start = 110.dp) // Başlığı sağa kaydırmak için padding
                     )                }
+>>>>>>> cd9573fe8ba20d66f08cd8294eb42d8d579a60d1
             },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
