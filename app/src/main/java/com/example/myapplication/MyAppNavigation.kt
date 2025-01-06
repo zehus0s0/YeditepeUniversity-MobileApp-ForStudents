@@ -189,9 +189,7 @@ fun MainScreen(loginViewModel: LoginViewModel) {
 
             composable("reviews") {
                 ReviewScreen(
-                    //reviews = emptyList(),
-                    onTeacherReviewClick = { navController.navigate("teacherReviews") },
-                    onCourseReviewClick = { navController.navigate("courseReviews") }
+                    onTeacherClick = { /* Teacher'a tıklandığında yapılacak işlem */ }
                 )
             }
 

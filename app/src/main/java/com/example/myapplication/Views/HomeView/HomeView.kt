@@ -34,12 +34,6 @@ import com.example.myapplication.Utilities.Constants
 import com.example.myapplication.Views.LoginView.AuthState
 import com.example.myapplication.Views.LoginView.LoginViewModel
 import androidx.navigation.compose.rememberNavController
-<<<<<<< HEAD
-import androidx.compose.ui.tooling.preview.Preview
-
-
-=======
->>>>>>> cd9573fe8ba20d66f08cd8294eb42d8d579a60d1
 
 @Composable
 fun HomeView(modifier: Modifier = Modifier, navController: NavController, loginViewModel: LoginViewModel) {

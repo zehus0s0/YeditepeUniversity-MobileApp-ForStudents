@@ -27,10 +27,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.R
 import android.util.Log
-
-
-
-
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 val OpenSansSemiBold = FontFamily(
     Font(R.font.open_sans_semibold)
@@ -43,10 +43,14 @@ fun ReviewScreen(
         Teacher(id = 1, name = "Merve Çaşkurlu", rating = 5.0f, photo = R.drawable.teacher_1),
         Teacher(id = 2, name = "Murat Yılmaz", rating = 2.8f, photo = R.drawable.teacher_2)
     ),
-    onTeacherReviewClick: () -> Unit = {},
-    onCourseReviewClick: () -> Unit = {},
+    courses: List<Course> = listOf(
+        Course(id = 1, code = "VCD 471", name = "Interactive Design Studio", instructor = "Merve Çaşkurlu", rating = 5.0f),
+        Course(id = 2, code = "VCD 592", name = "Internship", instructor = "Murat Yılmaz", rating = 3.2f)
+    ),
     onTeacherClick: (Teacher) -> Unit = {}
 ) {
+    var selectedTab by remember { mutableStateOf("Teachers") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,58 +81,81 @@ fun ReviewScreen(
         ) {
             CustomShadowButton(
                 text = "Teachers",
-                onClick = onTeacherReviewClick
+                selected = selectedTab == "Teachers",
+                onClick = { selectedTab = "Teachers" }
             )
             Spacer(modifier = Modifier.width(16.dp))
             CustomShadowButton(
                 text = "Courses",
-                onClick = onCourseReviewClick
+                selected = selectedTab == "Courses",
+                onClick = { selectedTab = "Courses" }
             )
         }
 
         LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-            items(teachers) { teacher ->
-                TeacherItem(teacher = teacher, onTeacherClick = onTeacherClick)
+            if (selectedTab == "Teachers") {
+                items(teachers) { teacher ->
+                    TeacherItem(teacher = teacher, onTeacherClick = onTeacherClick)
+                }
+            } else {
+                items(courses) { course ->
+                    CourseItem(course = course, onCourseClick = {})
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TabButton(){
+    TabButton()
+}
+
+@Composable
+fun CustomShadowButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .height(60.dp)
+            .width(180.dp),  // Her iki buton için sabit genişlik
+        contentAlignment = Alignment.Center
+    ) {
+        Button(
+            onClick = {
+                Log.d("ButtonClicked", "$text button clicked")
+                onClick()
+            },
+            modifier = Modifier
+                .height(if (selected) 46.dp else 42.dp)
+                .fillMaxWidth(),  // Box'ın genişliğini tamamen doldur
+                //.padding(horizontal = 4.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFF3F3F3)
+            ),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 4.dp,
+                pressedElevation = 6.dp
+            ),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = text,
+                    color = Color(0xFF718A39),
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1
+                )
             }
         }
     }
 }
 
 
-@Composable
-fun CustomShadowButton(
-    text: String,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = {
-            Log.d("ButtonClicked", "$text button clicked")
-            onClick()
-        },
-        modifier = Modifier
-            .width(180.dp)
-            .height(43.dp)
-            .graphicsLayer {
-                shadowElevation = 4.dp.toPx()
-                shape = RoundedCornerShape(10.dp)
-                clip = true
-            }
-            .background(Color(0xFFF3F3F3)),
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF3F3F3))
-    ) {
-        Text(
-            text = text,
-            style = TextStyle(
-                fontFamily = OpenSansSemiBold,
-                fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
-                letterSpacing = 0.sp
-            ),
-            color = Color(0xFF5F5464),
-        )
-    }
-}
 
 @Composable
 fun TeacherItem(teacher: Teacher, onTeacherClick: (Teacher) -> Unit) {
