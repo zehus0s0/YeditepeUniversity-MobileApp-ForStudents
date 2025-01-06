@@ -1,5 +1,6 @@
 package com.example.myapplication.Views.ChatList
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,6 +35,10 @@ import java.text.SimpleDateFormat
 import coil.compose.AsyncImage
 import com.example.myapplication.Utilities.Constants
 import java.util.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.style.TextAlign
+
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,58 +52,106 @@ fun ChatListScreen(
     val users by viewModel.users.observeAsState(emptyList())
     var selectedTab by remember { mutableStateOf("Private Chats") }
 
-    Scaffold(
-        topBar = {
-            Column {
-                TopAppBar(
-                    title = { Text("Chats", color = Constants.hubDark) },
-                    navigationIcon = {
-                        IconButton(onClick = { /* Geri git */ }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Constants.hubDark)
-                        }
-                    }
-                )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        // TitleCircle
+        Canvas(modifier = Modifier
+            .fillMaxWidth()
+            .height(380.dp)
+        ) {
+            val circleRadius = 800.dp.toPx()
+            val circleCenterX = size.width / 2
+            val circleCenterY = -circleRadius + 210f
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    listOf("Private Chats", "Group Chats").forEach { tab ->
+            drawCircle(
+                color = Constants.hubBabyBlue,
+                radius = circleRadius,
+                center = Offset(circleCenterX, circleCenterY)
+            )
+        }
+
+        // İçerik
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
+
+            TopAppBar(
+                title = { 
+                    Text(
+                        "Chats", 
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        modifier = Modifier.padding(start = 100.dp)
+                    ) 
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { /* Geri git */ },
+                        modifier = Modifier
+                            .padding(start = 0.dp, top = 0.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.ArrowBack, 
+                            contentDescription = "Geri", 
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                modifier = Modifier
+                    .height(48.dp)
+                    .padding(top = 0.dp)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Tabs with elevation
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                listOf("Private Chats", "Group Chats").forEach { tab ->
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 4.dp
+                        ),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        )
+                    ) {
                         Text(
                             text = tab,
                             modifier = Modifier
-                                .clip(RoundedCornerShape(16.dp))
                                 .clickable { selectedTab = tab }
-                                .background(
-                                    if (selectedTab == tab) Constants.hubBabyBlue.copy(alpha = 0.1f)
-                                    else Color.Transparent
-                                )
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = if (selectedTab == tab) Constants.hubGreen
-                                   else Constants.hubDark
+                                .padding(vertical = 12.dp)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            color = if (selectedTab == tab) Constants.hubGreen else Color.Gray
                         )
                     }
                 }
             }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showNewChatDialog = true },
-                containerColor = Constants.hubBabyBlue
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Chat listesi
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Yeni Sohbet", tint = Color.White)
-            }
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            LazyColumn {
-                items(chats.filter { 
+                items(chats.filter {
                     when (selectedTab) {
                         "Private Chats" -> it.chatType == "PRIVATE"
                         "Group Chats" -> it.chatType == "GROUP"
@@ -111,18 +164,29 @@ fun ChatListScreen(
                     )
                 }
             }
-
-            if (showNewChatDialog) {
-                NewChatDialog(
-                    users = users,
-                    onDismiss = { showNewChatDialog = false },
-                    onUserSelected = { user ->
-                        viewModel.createNewChat(user)
-                        showNewChatDialog = false
-                    }
-                )
-            }
         }
+
+        // FAB
+        FloatingActionButton(
+            onClick = { showNewChatDialog = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Constants.hubBabyBlue
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Yeni Sohbet", tint = Color.White)
+        }
+    }
+
+    if (showNewChatDialog) {
+        NewChatDialog(
+            users = users,
+            onDismiss = { showNewChatDialog = false },
+            onUserSelected = { user ->
+                viewModel.createNewChat(user)
+                showNewChatDialog = false
+            }
+        )
     }
 }
 
@@ -306,77 +370,5 @@ fun UserListItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
-@Composable
-fun ChatListScreenPreview() {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column {
-            // Top Bar
-            TopAppBar(
-                title = { Text("Chats", color = Constants.hubDark) },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri", tint = Constants.hubDark)
-                    }
-                }
-            )
 
-            // Tabs
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                listOf("Private Chats", "Group Chats").forEach { tab ->
-                    Text(
-                        text = tab,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .clickable { }
-                            .background(
-                                if (tab == "Private Chats") Constants.hubBabyBlue.copy(alpha = 0.1f)
-                                else Color.Transparent
-                            )
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        color = if (tab == "Private Chats") Constants.hubGreen
-                               else Constants.hubDark
-                    )
-                }
-            }
 
-            // Chat List
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                items(3) { index ->
-                    ChatListItem(
-                        chat = ChatData(
-                            chatId = index.toString(),
-                            chatName = when(index) {
-                                0 -> "Ahmet Yılmaz"
-                                1 -> "VCD 471 Grup"
-                                else -> "Merve Çaşkurlu"
-                            },
-                            chatType = if(index == 1) "GROUP" else "PRIVATE",
-                            lastMessage = when(index) {
-                                0 -> "Merhaba, ödev hakkında konuşabilir miyiz?"
-                                1 -> "Proje teslim tarihi ne zaman?"
-                                else -> "Teşekkür ederim"
-                            },
-                            lastMessageTimestamp = Timestamp(Date()),
-                            participants = listOf("1", "2")
-                        ),
-                        onClick = {}
-                    )
-                }
-            }
-        }
-    }
-} 
