@@ -1,11 +1,13 @@
 package com.example.myapplication.Views.CourseView
 
 import android.graphics.drawable.Drawable.ConstantState
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
@@ -73,6 +75,7 @@ fun CoursesScreen(
                 selected = selectedTab == CourseTab.MY_COURSES,
                 onClick = { viewModel.onTabSelected(CourseTab.MY_COURSES) }
             )
+            Spacer(modifier = Modifier.width(16.dp))
             TabButton(
                 text = "All Courses",
                 selected = selectedTab == CourseTab.ALL_COURSES,
@@ -101,28 +104,43 @@ fun TabButton(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
+    Box(
         modifier = Modifier
-            .height(if (selected) 46.dp else 40.dp) // Aktif buton daha büyük
-            .width(if (selected) 196.dp else 196.dp) // Aktif buton daha geniş
-            .padding(horizontal = 4.dp), // Butonlar arasında mesafe
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) Color(0xFFF3F3F3) else Color(0xFFF3F3F3) // Arka plan rengi
-        ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 4.dp, // Gölge etkisi
-            pressedElevation = 6.dp
-        ),
-        shape = MaterialTheme.shapes.medium
+            .height(60.dp)
+            .width(180.dp),  // Her iki buton için sabit genişlik
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = text,
-            color = if (selected) Color(0xFF718A39) else Color(0xFF718A39), // Yazı rengi
-            style = MaterialTheme.typography.labelLarge
-        )
+        Button(
+            onClick = {
+                Log.d("ButtonClicked", "$text button clicked")
+                onClick()
+            },
+            modifier = Modifier
+                .height(if (selected) 46.dp else 42.dp)  // Aktif buton daha büyük
+                .fillMaxWidth(),  // Box'ın genişliğini tamamen doldur
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFF3F3F3) // Arka plan rengi
+            ),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 4.dp,  // Gölge efekti
+                pressedElevation = 6.dp
+            ),
+            shape = RoundedCornerShape(10.dp)  // Butonun köşelerini yuvarla
+        ) {
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = text,
+                    color = Color(0xFF718A39),  // Yazı rengi
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1
+                )
+            }
+        }
     }
 }
+
 
 
 @Composable

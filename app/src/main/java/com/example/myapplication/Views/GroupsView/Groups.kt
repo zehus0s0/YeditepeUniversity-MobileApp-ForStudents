@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.Utilities.Constants
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupsScreen(
@@ -38,26 +37,21 @@ fun GroupsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Constants.hubWhite) // Arka plan rengini Constants'tan alıyor
+            .background(Constants.hubWhite)
     ) {
         // Top Bar
         TopAppBar(
             title = {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-
-
+                    contentAlignment = Alignment.Center
                 ) {
-<<<<<<< HEAD
-                    Text("Groups", color = Constants.hubDark)
-                }
-=======
                     Text(
                         text = "Groups",
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(start = 110.dp) // Başlığı sağa kaydırmak için padding
-                    )                }
->>>>>>> cd9573fe8ba20d66f08cd8294eb42d8d579a60d1
+                        color = Constants.hubDark
+                    )
+                }
             },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
@@ -69,7 +63,7 @@ fun GroupsScreen(
                 }
             },
             colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = Constants.hubWhite // Renk Constants'tan geliyor
+                containerColor = Constants.hubWhite
             )
         )
 
@@ -77,37 +71,32 @@ fun GroupsScreen(
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
-
-        ){
-        Button(
-            onClick = { /* Yeni grup oluşturma */ },
-            modifier = Modifier
-                .padding(16.dp)
-                .height(32.dp)
-                .width(150.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF379634)),
-            shape = RoundedCornerShape(20.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = "Add",
-                    tint = Constants.hubWhite,
-                    modifier = Modifier.size(18.dp)
-                        .width(16.dp)
-                        .height(16.dp),
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "New Group",
-                    color = Constants.hubWhite,
-                    modifier = Modifier
-                        .width(77.dp) // Genişliği manuel ayarladım
-                        .height(18.dp) // Yüksekliği manuel ayarladım
-                )
+            Button(
+                onClick = { /* Yeni grup oluşturma */ },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(32.dp)
+                    .width(150.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF379634)),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Add",
+                        tint = Constants.hubWhite,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "New Group",
+                        color = Constants.hubWhite
+                    )
+                }
             }
         }
-        }
+
         // Groups List
         LazyColumn(
             modifier = Modifier
@@ -133,14 +122,12 @@ fun GroupCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .width(369.dp)
-            .height(95.dp) // Yükseklik ayarlanabilir
+            .height(95.dp)
             .padding(5.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Constants.hubWhite),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp) // Gölge efekti
-
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
             modifier = Modifier
@@ -150,7 +137,7 @@ fun GroupCard(
         ) {
             // Group Icon
             Surface(
-                modifier = Modifier.size(50.dp), // İkon boyutu
+                modifier = Modifier.size(50.dp),
                 shape = CircleShape,
                 color = Constants.hubBabyBlue
             ) {
@@ -169,7 +156,7 @@ fun GroupCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp),
-                color = Constants.hubDark // Yazı rengi
+                color = Constants.hubDark
             )
 
             // Arrow Icon
