@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -18,24 +17,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-
 import com.example.myapplication.R
 
 @Composable
 fun ReviewCoursesScreen(
     courses: List<Course> = listOf(
         Course(id = 1, code = "VCD 471", name = "Interactive Design Studio", instructor = "Merve Çaşkurlu", rating = 5.0f),
-        Course(id = 2, code = "VCD 592", name = "Internship", instructor = "Murat Yılmaz", rating = 3.2f)
+        Course(id = 2, code = "VCD 592", name = "Internship", instructor = "Murat Yılmaz", rating = 2.8f)
     ),
-    onNavigateBack: () -> Unit = {}, // Mavi oka basınca geri dönecek fonksiyon
-    onCourseClick: (Course) -> Unit = {} // Yeşil oka basınca course-specific aksiyon
+    onNavigateBack: () -> Unit = {},
+    onCourseClick: (Course) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF3F3F3))
     ) {
-        // En Üstteki Mavi Geri Dönüş Butonu
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -44,7 +41,7 @@ fun ReviewCoursesScreen(
         ) {
             IconButton(onClick = onNavigateBack) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_left), // Mavi ok ikonu
+                    painter = painterResource(id = R.drawable.ic_arrow_left),
                     contentDescription = "Back",
                     tint = Color(0xFF3C9BFF),
                     modifier = Modifier.size(24.dp)
@@ -63,12 +60,13 @@ fun ReviewCoursesScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Derslerin Listesi
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
             items(courses) { course ->
                 CourseItem(course = course, onCourseClick = onCourseClick)
             }
@@ -83,79 +81,118 @@ fun CourseItem(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth() // Kart genişliği LazyColumn genişliğiyle aynı olur
             .padding(vertical = 8.dp)
-            .graphicsLayer {
-                shadowElevation = 4.dp.value // `toPx` yerine `dp.value` ile gölge seviyesi tanımlandı
-                shape = RoundedCornerShape(10.dp)
-                clip = true
-            },
+            .size(width = 369.dp, height = 131.dp), // Kutunun boyutları burada ayarlandı
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxSize() // Box genişliği ve yüksekliği Card'a göre ayarlanır
         ) {
             Row(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(), // Row genişliği ve yüksekliği Card'a göre ayarlanır
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 ) {
-                    Text(
-                        text = course.code,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            color = Color(0xFF379634)
+                    // Mavi dikdörtgen arka plan
+                    Box(
+                        modifier = Modifier
+                            .width(116.dp)
+                            .height(46.dp) // Kod arka plan boyutu
+                            .background(Color(0xFF85C0FF), RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = course.code,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         )
-                    )
-                    Text(
-                        text = course.name,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 16.sp,
-                            color = Color(0xFF342E37)
-                        )
-                    )
-                    Text(
-                        text = course.instructor,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 14.sp,
-                            color = Color(0xFF5F5464)
-                        )
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Yıldızlar
+                    Row(
+                        modifier = Modifier
+                            .width(112.63.dp) // ReviewScreen ile aynı genişlik
+                            .height(19.76.dp), // ReviewScreen ile aynı yükseklik
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         repeat(5) { index ->
-                            val starIcon = if (index < course.rating.toInt()) {
-                                R.drawable.ic_star_filled
-                            } else {
-                                R.drawable.ic_star_outline
+                            val starIcon = when {
+                                index < course.rating.toInt() -> R.drawable.ic_star_filled
+                                index < course.rating.toInt() + 1 && course.rating % 1 != 0f -> R.drawable.ic_star_half
+                                else -> R.drawable.ic_star_outline
                             }
 
                             Icon(
                                 painter = painterResource(id = starIcon),
                                 contentDescription = null,
                                 tint = Color(0xFF5BC658),
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(19.76.dp)
                             )
                         }
                     }
                 }
-            }
 
-            // Sağdaki Yeşil Ok
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(start = 20.dp)
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = if (course.name == "Interactive Design Studio") {
+                            "Interactive\nDesign Studio"
+                        } else {
+                            course.name
+                        },
+                        style = TextStyle(
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sp,
+                            color = Color(0xFF342E37)
+                        ),
+                        maxLines = 2,
+                        softWrap = true
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = course.instructor,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            color = Color(0xFF379634)
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp)) // Sağdaki yeşil ok için boşluk ayarlandı
+            }
+            // Sağ alt köşedeki yeşil ok
             IconButton(
                 onClick = { onCourseClick(course) },
                 modifier = Modifier
                     .size(40.dp)
-                    .align(Alignment.BottomEnd)
-                    .padding(8.dp)
+                    .align(Alignment.BottomEnd) // Yeşil oku sağ alta hizaladık
+                    .padding(8.dp) // Sağ alt köşe boşluk ayarı
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_right), // Yeşil ok ikonu
+                    painter = painterResource(id = R.drawable.ic_arrow_right),
                     contentDescription = "Arrow",
                     tint = Color(0xFF379634),
                     modifier = Modifier.size(24.dp)

@@ -45,7 +45,7 @@ fun ReviewScreen(
     ),
     courses: List<Course> = listOf(
         Course(id = 1, code = "VCD 471", name = "Interactive Design Studio", instructor = "Merve Çaşkurlu", rating = 5.0f),
-        Course(id = 2, code = "VCD 592", name = "Internship", instructor = "Murat Yılmaz", rating = 3.2f)
+        Course(id = 2, code = "VCD 592", name = "Internship", instructor = "Murat Yılmaz", rating = 2.8f)
     ),
     onTeacherClick: (Teacher) -> Unit = {}
 ) {
